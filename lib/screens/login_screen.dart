@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
             width: MediaQuery.of(context).size.width,
             bottom: 0,
             child: Image.asset(
-              'assets/images/cliparts/health_insurance_clipart.png',
+              'assets/images/cliparts/login_clipart.png',
               opacity: const AlwaysStoppedAnimation(.4),
             ),
           ),
