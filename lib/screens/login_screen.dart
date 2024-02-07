@@ -1,6 +1,5 @@
-import 'package:expatrio_challenge/screens/home.dart';
 import 'package:expatrio_challenge/services/authentication_service.dart';
-import 'package:expatrio_challenge/theme/expatrio_theme.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
