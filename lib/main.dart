@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     return MaterialApp(
       title: 'Expatrio Challenge',
       theme: ExpatrioTheme.themeData,
@@ -21,10 +21,9 @@ class MyApp extends StatelessWidget {
         future: storage.read(key: 'auth_token'),
         builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
           if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return LoginScreen();
+            return const LoginScreen();
           } else {
-            // Si hay token, muestra la pantalla principal (dashboard)
-            return HomePage(title: 'Home');
+            return const HomePage(title: 'Home');
           }
         },
       ),
