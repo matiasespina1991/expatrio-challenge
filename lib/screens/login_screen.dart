@@ -25,6 +25,14 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         children: [
           Positioned(
+            width: MediaQuery.of(context).size.width,
+            bottom: 0,
+            child: Image.asset(
+              'assets/images/cliparts/health_insurance_clipart.png',
+              opacity: const AlwaysStoppedAnimation(.4),
+            ),
+          ),
+          Positioned(
             left: 20,
             bottom: 20,
             child: ElevatedButton(
@@ -86,6 +94,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextField(
                       controller: _emailController,
                       decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white70,
                         hintText: 'Email',
                         border: OutlineInputBorder(),
                       ),
@@ -109,6 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextField(
                       controller: _passwordController,
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white70,
                         hintText: 'Password',
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(

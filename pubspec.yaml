@@ -29,6 +29,7 @@ flutter:
 
   assets:
      - assets/images/logo/
+     - assets/images/cliparts/
 
   fonts:
        - family: Acumin Pro
