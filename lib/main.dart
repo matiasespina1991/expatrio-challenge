@@ -1,8 +1,10 @@
+import 'package:expatrio_challenge/providers/authentication_provider.dart';
 import 'package:expatrio_challenge/screens/home.dart';
 import 'package:expatrio_challenge/screens/login_screen.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,19 +15,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const storage = FlutterSecureStorage();
-    return MaterialApp(
-      title: 'Expatrio Challenge',
-      theme: ExpatrioTheme.themeData,
-      home: FutureBuilder(
-        future: storage.read(key: 'auth_token'),
-        builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-          if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return const LoginScreen();
-          } else {
-            return const HomePage(title: 'Home');
-          }
-        },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: MaterialApp(
+        title: 'Expatrio Challenge',
+        theme: ExpatrioTheme.themeData,
+        home: Consumer<AuthProvider>(
+          builder: (context, auth, _) {
+            return auth.isAuthenticated
+                ? const HomePage(title: 'Home')
+                : const LoginScreen();
+          },
+        ),
       ),
     );
   }
