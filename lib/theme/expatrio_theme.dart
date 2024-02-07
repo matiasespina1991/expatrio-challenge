@@ -28,7 +28,11 @@ class ExpatrioTheme {
     ),
     colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
     appBarTheme: const AppBarTheme(
-      foregroundColor: Colors.white,
+      elevation: 4,
+      shadowColor: Colors.black,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      foregroundColor: Colors.black,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       foregroundColor: Colors.white,
