@@ -1,16 +1,20 @@
+import 'package:expatrio_challenge/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+import '../services/authentication_service.dart';
 
-  final String title;
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({
+    super.key,
+  });
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DashboardScreenState extends State<DashboardScreen> {
   int _counter = 0;
+  final AuthenticationService _authService = AuthenticationService();
 
   void _incrementCounter() {
     setState(() {
@@ -22,13 +26,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () async {
+            goBack(context);
+          },
+        ),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -65,5 +69,14 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Future<void> goBack(context) async {
+    try {
+      await _authService.logout(context: context);
+      Navigator.maybePop(context);
+    } catch (e) {
+      debugPrint('Error when attempting to logout: $e');
+    }
   }
 }

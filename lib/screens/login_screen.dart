@@ -93,11 +93,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.white70,
+                        fillColor: Colors.white.withAlpha(220),
                         hintText: 'Email',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 20.0),
@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Colors.white70,
+                        fillColor: Colors.white.withAlpha(220),
                         hintText: 'Password',
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(

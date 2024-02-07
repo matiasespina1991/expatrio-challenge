@@ -1,5 +1,5 @@
 import 'package:expatrio_challenge/providers/authentication_provider.dart';
-import 'package:expatrio_challenge/screens/home.dart';
+import 'package:expatrio_challenge/screens/dashboard_screen.dart';
 import 'package:expatrio_challenge/screens/login_screen.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         home: Consumer<AuthProvider>(
           builder: (context, auth, _) {
             return auth.isAuthenticated
-                ? const HomePage(title: 'Home')
+                ? const DashboardScreen()
                 : const LoginScreen();
           },
         ),

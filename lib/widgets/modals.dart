@@ -91,4 +91,51 @@ class ShowModal {
       },
     );
   }
+
+  void failedLogout({
+    required BuildContext context,
+    required onTapConfirm,
+  }) {
+    showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 300,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  radius: 30,
+                  child: const Icon(Icons.close, size: 50, color: Colors.white),
+                ),
+                const SizedBox(height: 20),
+                const Text('Failed Logout',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
+                const SizedBox(height: 5),
+                const Text(
+                    'There was an error when trying to logout. Please try again.',
+                    style: TextStyle(fontSize: 18)),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                  ),
+                  onPressed: () {
+                    onTapConfirm();
+                  },
+                  child: const Text('OK'), // Texto del botón
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../screens/home.dart';
+import '../screens/dashboard_screen.dart';
+import '../screens/login_screen.dart';
 import '../widgets/modals.dart';
 
 class AuthenticationService {
@@ -30,10 +31,9 @@ class AuthenticationService {
         context: context,
         onTapConfirm: () {
           Navigator.of(context).pop();
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => const HomePage(title: 'Home')),
+            MaterialPageRoute(builder: (context) => const DashboardScreen()),
           );
         },
       );
@@ -49,6 +49,22 @@ class AuthenticationService {
       debugPrint('Login failed.');
       debugPrint('Login error status: ${response.statusCode}');
       debugPrint('Reason of failed login: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> logout({context}) async {
+    try {
+      await storage.delete(key: 'auth_token');
+      return true;
+    } catch (e) {
+      debugPrint('Logout error: $e');
+      showModal.failedLogout(
+        context: context,
+        onTapConfirm: () {
+          Navigator.of(context).pop();
+        },
+      );
       return false;
     }
   }
