@@ -36,6 +36,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   bool _isPasswordVisible = false;
   bool _isHelpButtonVisible = true;
+  bool _attemptingLogin = false;
 
   @override
   void initState() {
@@ -191,6 +192,7 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 25.0),
                     ExpatrioButton(
+                      isDisabled: _attemptingLogin,
                       fullWidth: true,
                       onPressed: () {
                         attemptLogin(context);
@@ -239,6 +241,9 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void attemptLogin(context) async {
+    setState(() {
+      _attemptingLogin = true;
+    });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
@@ -268,6 +273,9 @@ class LoginScreenState extends State<LoginScreen> {
         },
       );
     } else {
+      setState(() {
+        _attemptingLogin = false;
+      });
       showModal.failedLogin(
         context: context,
         onTapConfirm: () {
