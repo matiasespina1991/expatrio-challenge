@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/expatrio_theme.dart';
 import 'buttons.dart';
+import 'country_picker_modal_content.dart';
 
 class ShowModal {
   void successfulLogin({
@@ -286,6 +287,18 @@ class ShowModal {
       builder: (BuildContext context) {
         return TaxDataModalContent(onTapConfirm: onTapConfirm);
       },
+    );
+  }
+
+  Future<void> showCountryPicker({
+    required BuildContext context,
+    required void Function(String) onCountrySelected,
+  }) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) =>
+          CountryPickerModal(onCountrySelected: onCountrySelected),
     );
   }
 }
