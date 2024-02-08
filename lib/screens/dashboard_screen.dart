@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/widgets/buttons.dart';
 import 'package:expatrio_challenge/widgets/modals.dart';
 import 'package:flutter/material.dart';
 
@@ -51,16 +52,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               const SizedBox(height: 35),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                onPressed: () {
-                  _showModal.updateTaxData(
-                      context: context, onTapConfirm: confirmUpdateTaxData);
-                },
-                child: const Text('UPDATE YOUR TAX DATA'),
-              ),
+              ExpatrioButton(
+                  fullWidth: true,
+                  text: 'Update your tax data',
+                  onPressed: () => _showModal.updateTaxData(
+                      context: context, onTapConfirm: confirmUpdateTaxData))
             ],
           ),
         ),

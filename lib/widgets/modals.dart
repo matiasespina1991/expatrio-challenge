@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/expatrio_theme.dart';
@@ -9,6 +8,7 @@ class ShowModal {
     required onTapConfirm,
   }) {
     showModalBottomSheet(
+      enableDrag: false,
       isDismissible: false,
       context: context,
       builder: (BuildContext context) {
@@ -144,28 +144,37 @@ class ShowModal {
     required onTapConfirm,
   }) {
     showModalBottomSheet(
+      enableDrag: false,
+      isScrollControlled: true,
       isDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return SizedBox(
-          height: 300,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text('Update Tax Data',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    )),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    onTapConfirm();
-                  },
-                  child: const Text('GOT IT'), // Texto del botón
-                ),
-              ],
+        return Padding(
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, top: 60, bottom: 20),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            width: MediaQuery.of(context).size.width,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text('Declaration of financial information',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const SizedBox(height: 100),
+                  ElevatedButton(
+                    onPressed: () {
+                      onTapConfirm();
+                    },
+                    child: const Text('GOT IT'), // Texto del botón
+                  ),
+                ],
+              ),
             ),
           ),
         );
