@@ -68,12 +68,12 @@ class ShowModal {
                   child: const Icon(Icons.close, size: 50, color: Colors.white),
                 ),
                 const SizedBox(height: 20),
-                const Text('Failed Login',
+                const Text('Login failed',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     )),
-                const SizedBox(height: 5),
+                const SizedBox(height: 8),
                 const Text('Please try again', style: TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
                 ExpatrioButton(

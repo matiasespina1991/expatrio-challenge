@@ -30,7 +30,6 @@ class AuthenticationService {
       final accessToken = data['accessToken'];
 
       if (accessToken == null) {
-        showFailedLoginModal(context);
         debugPrint('Login failed.');
         debugPrint(
             'Reason of failed login: The login request seemed to be successful but accessToken inside the response returned null.');
@@ -43,7 +42,6 @@ class AuthenticationService {
 
       return true;
     } else {
-      showFailedLoginModal(context);
       debugPrint('Login failed.');
       debugPrint('Login error status: ${response.statusCode}');
       debugPrint('Reason of failed login: ${response.body}');
@@ -53,7 +51,6 @@ class AuthenticationService {
 
   Future<bool> authenticate(context) async {
     final accessToken = await storage.read(key: 'auth_token').catchError((e) {
-      showFailedLoginModal(context);
       debugPrint('Error reading token: $e');
     });
 
@@ -70,17 +67,7 @@ class AuthenticationService {
       return true;
     } catch (e) {
       debugPrint('Logout error: $e');
-      showFailedLoginModal(context);
       return false;
     }
-  }
-
-  void showFailedLoginModal(context) {
-    showModal.failedLogin(
-      context: context,
-      onTapConfirm: () {
-        Navigator.of(context).pop();
-      },
-    );
   }
 }

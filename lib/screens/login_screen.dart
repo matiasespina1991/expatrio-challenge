@@ -326,7 +326,18 @@ class LoginScreenState extends State<LoginScreen>
         onTapConfirm: () async {
           Navigator.of(context).pop();
 
-          await _authService.authenticate(context);
+          var authenticationSuccessful =
+              await _authService.authenticate(context);
+
+          if (!authenticationSuccessful) {
+            showModal.failedLogin(
+              context: context,
+              onTapConfirm: () {
+                Navigator.of(context).pop();
+              },
+            );
+            return;
+          }
 
           Navigator.push(
             context,
@@ -335,12 +346,12 @@ class LoginScreenState extends State<LoginScreen>
         },
       );
     } else {
-      setState(() {
-        _attemptingLogin = false;
-      });
       showModal.failedLogin(
         context: context,
         onTapConfirm: () {
+          setState(() {
+            _attemptingLogin = false;
+          });
           Navigator.of(context).pop();
         },
       );
