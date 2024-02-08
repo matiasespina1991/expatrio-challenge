@@ -13,11 +13,41 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final AuthenticationService _authService = AuthenticationService();
+  final storage = const FlutterSecureStorage();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final storage = const FlutterSecureStorage();
-  final AuthenticationService _authService = AuthenticationService();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+
   bool _isPasswordVisible = false;
+  bool _isHelpButtonVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Listeners para los FocusNode
+    _emailFocusNode.addListener(_onFocusChange);
+    _passwordFocusNode.addListener(_onFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _emailFocusNode.removeListener(_onFocusChange);
+    _passwordFocusNode.removeListener(_onFocusChange);
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _isHelpButtonVisible =
+          !_emailFocusNode.hasFocus && !_passwordFocusNode.hasFocus;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,34 +57,36 @@ class _LoginScreenState extends State<LoginScreen> {
           Positioned(
             width: MediaQuery.of(context).size.width,
             bottom: 0,
+            left: 50,
             child: Image.asset(
               'assets/images/cliparts/login_clipart.png',
-              opacity: const AlwaysStoppedAnimation(.4),
+              opacity: const AlwaysStoppedAnimation(.30),
             ),
           ),
-          Positioned(
-            left: 20,
-            bottom: 20,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ExpatrioTheme.secondaryColor,
-                minimumSize: const Size(100, 50),
-              ),
-              onPressed: () {},
-              child: const Row(
-                children: [
-                  Icon(Icons.help_outline,
-                      size: 25, color: ExpatrioTheme.primaryColor),
-                  SizedBox(width: 2),
-                  Text('Help',
-                      style: TextStyle(
-                          color: ExpatrioTheme.primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold))
-                ],
+          if (_isHelpButtonVisible)
+            Positioned(
+              left: 20,
+              bottom: 20,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ExpatrioTheme.secondaryColor,
+                  minimumSize: const Size(100, 50),
+                ),
+                onPressed: () {},
+                child: const Row(
+                  children: [
+                    Icon(Icons.help_outline,
+                        size: 25, color: ExpatrioTheme.primaryColor),
+                    SizedBox(width: 2),
+                    Text('Help',
+                        style: TextStyle(
+                            color: ExpatrioTheme.primaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold))
+                  ],
+                ),
               ),
             ),
-          ),
           SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Center(
@@ -93,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextField(
                       controller: _emailController,
+                      focusNode: _emailFocusNode,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white.withAlpha(220),
@@ -118,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextField(
                       controller: _passwordController,
+                      focusNode: _passwordFocusNode,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white.withAlpha(220),
