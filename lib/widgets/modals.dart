@@ -135,6 +135,51 @@ class ShowModal {
     );
   }
 
+  void unauthorizedAccess({
+    required BuildContext context,
+    required onTapConfirm,
+    required String screenName,
+  }) {
+    showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 300,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  radius: 30,
+                  child: const Icon(Icons.close, size: 50, color: Colors.white),
+                ),
+                const SizedBox(height: 20),
+                const Text('Unauthorized Access',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
+                const SizedBox(height: 5),
+                Text('You need to login to access $screenName.',
+                    style: const TextStyle(fontSize: 18)),
+                const SizedBox(height: 20),
+                ExpatrioButton(
+                  isPrimary: false,
+                  onPressed: () {
+                    onTapConfirm();
+                  },
+                  text: 'OK',
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void updateTaxData({
     required BuildContext context,
     required onTapConfirm,

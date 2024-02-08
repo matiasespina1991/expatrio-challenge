@@ -14,9 +14,12 @@ class DashboardScreen extends StatelessWidget {
       builder: (context, authProvider, child) {
         if (!authProvider.isAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const LoginScreen()));
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const LoginScreen(
+                      userTriedUnauthorizedAccess: 'dashboard',
+                    )));
           });
+
           return const Scaffold(
               body: Center(child: CircularProgressIndicator()));
         }

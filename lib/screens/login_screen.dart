@@ -12,7 +12,14 @@ import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  /// If the user tries to access a screen without being authenticated,
+  /// this variable will be populated with the name of the screen the
+  /// user tried to access.
+  final String? userTriedUnauthorizedAccess;
+  const LoginScreen({
+    this.userTriedUnauthorizedAccess,
+    super.key,
+  });
 
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -27,12 +34,15 @@ class LoginScreenState extends State<LoginScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
 
+  bool _showUnauthorizedAccessMessage = false;
   bool _isPasswordVisible = false;
   bool _isHelpButtonVisible = true;
 
   @override
   void initState() {
     super.initState();
+    _showUnauthorizedAccessMessage = widget.userTriedUnauthorizedAccess != null;
+
     _emailFocusNode.addListener(_onFocusChange);
     _passwordFocusNode.addListener(_onFocusChange);
     _authService = AuthenticationService(
@@ -60,6 +70,21 @@ class LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_showUnauthorizedAccessMessage) {
+        showModal.unauthorizedAccess(
+          screenName: widget.userTriedUnauthorizedAccess!,
+          context: context,
+          onTapConfirm: () {
+            setState(() {
+              _showUnauthorizedAccessMessage = false;
+            });
+            Navigator.of(context).pop();
+          },
+        );
+      }
+    });
+
     return Scaffold(
       body: Stack(
         children: [
