@@ -34,20 +34,30 @@ class LoginScreenState extends State<LoginScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
 
-  bool _showUnauthorizedAccessMessage = false;
   bool _isPasswordVisible = false;
   bool _isHelpButtonVisible = true;
 
   @override
   void initState() {
     super.initState();
-    _showUnauthorizedAccessMessage = widget.userTriedUnauthorizedAccess != null;
 
     _emailFocusNode.addListener(_onFocusChange);
     _passwordFocusNode.addListener(_onFocusChange);
     _authService = AuthenticationService(
       authProvider: Provider.of<AuthProvider>(context, listen: false),
     );
+
+    if (widget.userTriedUnauthorizedAccess != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showModal.unauthorizedAccess(
+          screenName: widget.userTriedUnauthorizedAccess!,
+          context: context,
+          onTapConfirm: () {
+            Navigator.of(context).pop();
+          },
+        );
+      });
+    }
   }
 
   @override
@@ -58,6 +68,7 @@ class LoginScreenState extends State<LoginScreen> {
     _passwordFocusNode.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+
     super.dispose();
   }
 
@@ -70,21 +81,6 @@ class LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_showUnauthorizedAccessMessage) {
-        showModal.unauthorizedAccess(
-          screenName: widget.userTriedUnauthorizedAccess!,
-          context: context,
-          onTapConfirm: () {
-            setState(() {
-              _showUnauthorizedAccessMessage = false;
-            });
-            Navigator.of(context).pop();
-          },
-        );
-      }
-    });
-
     return Scaffold(
       body: Stack(
         children: [
@@ -260,8 +256,11 @@ class LoginScreenState extends State<LoginScreen> {
     if (isLoggedIn) {
       showModal.successfulLogin(
         context: context,
-        onTapConfirm: () {
+        onTapConfirm: () async {
           Navigator.of(context).pop();
+
+          await _authService.authenticate(context);
+
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const DashboardScreen()),
