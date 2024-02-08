@@ -14,7 +14,13 @@ class ExpatrioTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(primaryColor),
+        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return Colors.grey.shade400;
+          }
+          return primaryColor;
+        }),
         foregroundColor: MaterialStateProperty.all(Colors.white),
         minimumSize: MaterialStateProperty.all(const Size(200, 50)),
         textStyle: MaterialStateProperty.all(
