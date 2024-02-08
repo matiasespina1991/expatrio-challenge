@@ -251,11 +251,11 @@ class ShowModal {
                       fontWeight: FontWeight.bold,
                     )),
                 const SizedBox(height: 8),
-                SizedBox(
+                const SizedBox(
                   width: 300,
                   child: Text(
                       'You tried to login to login but you dont have internet connection. Please connect to internet and try to login again.',
-                      style: const TextStyle(fontSize: 18)),
+                      style: TextStyle(fontSize: 18)),
                 ),
                 const SizedBox(height: 20),
                 ExpatrioButton(

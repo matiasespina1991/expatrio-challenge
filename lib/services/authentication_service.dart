@@ -52,6 +52,7 @@ class AuthenticationService {
   Future<bool> authenticate(context) async {
     final accessToken = await storage.read(key: 'auth_token').catchError((e) {
       debugPrint('Error reading token: $e');
+      return e;
     });
 
     if (accessToken != null) {

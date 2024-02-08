@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
+import '../utilities/is_email_valid.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 
@@ -161,7 +162,7 @@ class LoginScreenState extends State<LoginScreen>
                             Radius.circular(7),
                           ),
                         ),
-                        errorBorder: OutlineInputBorder(
+                        errorBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.red, width: 1.0),
                           borderRadius: BorderRadius.all(
                             Radius.circular(7),
@@ -358,12 +359,5 @@ class LoginScreenState extends State<LoginScreen>
     }
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-  }
-
-  bool isEmailValid(String email) {
-    final emailRegExp = RegExp(
-      r'^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
-    );
-    return emailRegExp.hasMatch(email);
   }
 }

@@ -8,13 +8,13 @@ import '../widgets/modals.dart';
 import 'login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({Key? key}) : super(key: key);
+  const DashboardScreen({super.key});
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  DashboardScreenState createState() => DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen>
+class DashboardScreenState extends State<DashboardScreen>
     with ConnectivitySnackBarMixin {
   bool _goBackPressed = false;
   late ConnectivityProvider _connectivityProvider;
@@ -39,7 +39,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         if (!authProvider.isAuthenticated) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => LoginScreen(
                 userTriedUnauthorizedAccess:
