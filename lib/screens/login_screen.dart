@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
+import '../mixins/connectivity_snackbar_mixin.dart';
 import '../providers/authentication_provider.dart';
+import '../providers/conectivity_provider.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 
@@ -25,7 +27,8 @@ class LoginScreen extends StatefulWidget {
   LoginScreenState createState() => LoginScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen>
+    with ConnectivitySnackBarMixin {
   late AuthenticationService _authService;
   final storage = const FlutterSecureStorage();
   final showModal = ShowModal();
@@ -33,6 +36,7 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+  late ConnectivityProvider _connectivityProvider;
 
   bool _isPasswordVisible = false;
   bool _isHelpButtonVisible = true;
@@ -47,6 +51,12 @@ class LoginScreenState extends State<LoginScreen> {
     _authService = AuthenticationService(
       authProvider: Provider.of<AuthProvider>(context, listen: false),
     );
+
+    _connectivityProvider =
+        Provider.of<ConnectivityProvider>(context, listen: false);
+    _connectivityProvider.addListener(() {
+      showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+    });
 
     if (widget.userTriedUnauthorizedAccess != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -241,6 +251,31 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void attemptLogin(context) async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      List<String> emptyFields = [];
+      if (_emailController.text.isEmpty) {
+        emptyFields.add('email');
+      }
+      if (_passwordController.text.isEmpty) {
+        emptyFields.add('password');
+      }
+
+      showModal.loginFieldsAreEmpty(
+        emptyFields: emptyFields,
+        context: context,
+        onTapConfirm: () {
+          Navigator.of(context).pop();
+        },
+      );
+      return;
+    }
+
+    if (!_connectivityProvider.isConnected) {
+      showModal.unableToLoginDueToNoInternet(
+          context: context, onTapConfirm: () => Navigator.of(context).pop());
+      return;
+    }
+
     setState(() {
       _attemptingLogin = true;
     });

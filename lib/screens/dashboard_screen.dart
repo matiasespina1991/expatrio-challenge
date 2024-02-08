@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../mixins/connectivity_snackbar_mixin.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
 import '../widgets/buttons.dart';
@@ -13,43 +14,28 @@ class DashboardScreen extends StatefulWidget {
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-  bool _showNoInternetSnackbar = false;
+class _DashboardScreenState extends State<DashboardScreen>
+    with ConnectivitySnackBarMixin {
   bool _goBackPressed = false;
-  late final ConnectivityProvider _connectivityProvider;
+  late ConnectivityProvider _connectivityProvider;
 
   @override
   void initState() {
     super.initState();
     _connectivityProvider =
         Provider.of<ConnectivityProvider>(context, listen: false);
-    _connectivityProvider.addListener(_handleConnectivityChange);
-  }
-
-  @override
-  void dispose() {
-    _connectivityProvider.removeListener(_handleConnectivityChange);
-    super.dispose();
-  }
-
-  void _handleConnectivityChange() {
-    final isConnected = _connectivityProvider.isConnected;
-    setState(() {
-      _showNoInternetSnackbar = !isConnected;
+    _connectivityProvider.addListener(() {
+      showConnectivitySnackBar(context, _connectivityProvider.isConnected);
     });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // if (_showNoInternetSnackbar) {
-    //   print('No internet connection');
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('No internet connection'),
-    //       backgroundColor: Colors.red,
-    //     ),
-    //   );
-    // }
     return Consumer<AuthProvider>(
       builder: (context, authProvider, child) {
         if (!authProvider.isAuthenticated) {
@@ -124,14 +110,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ),
-            floatingActionButton: _showNoInternetSnackbar
-                ? FloatingActionButton.extended(
-                    onPressed: () {},
-                    label: const Text('No internet connection'),
-                    icon: const Icon(Icons.warning),
-                    backgroundColor: Colors.red,
-                  )
-                : null,
           ),
         );
       },

@@ -21,9 +21,11 @@ class ExpatrioButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isDisabled ? () {} : onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isPrimary && !isDisabled
+        backgroundColor: isPrimary
             ? const Color(0xFF40AF9E)
-            : const Color(0xFFE0E0E0),
+            : isDisabled
+                ? const Color(0xFFE0E0E0)
+                : Colors.grey,
         minimumSize:
             fullWidth ? const Size(double.infinity, 50) : const Size(130, 50),
       ),

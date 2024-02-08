@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ExpatrioChallengeApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ExpatrioChallengeApp extends StatelessWidget {
+  const ExpatrioChallengeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
       ],
       child: MaterialApp(
-        title: 'Expatrio Challenge',
+        title: 'Expatrio Challenge App',
         theme: ExpatrioTheme.themeData,
         home: Consumer<AuthProvider>(
           builder: (context, auth, _) {

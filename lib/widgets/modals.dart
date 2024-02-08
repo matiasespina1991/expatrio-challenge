@@ -90,6 +90,52 @@ class ShowModal {
     );
   }
 
+  void loginFieldsAreEmpty({
+    required BuildContext context,
+    required Function onTapConfirm,
+    required List<String> emptyFields,
+  }) {
+    showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 300,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Icon(Icons.warning, size: 50, color: Colors.amber),
+                const SizedBox(height: 20),
+                const Text('Some fields are empty',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
+                const SizedBox(height: 8),
+                const Text('Please fill in all fields:',
+                    style: TextStyle(fontSize: 18)),
+                const SizedBox(height: 8),
+                ...emptyFields.map((element) => Text(element,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold))),
+                const SizedBox(height: 15),
+                ExpatrioButton(
+                  isPrimary: false,
+                  onPressed: () {
+                    onTapConfirm();
+                  },
+                  text: 'Ok',
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void failedLogout({
     required BuildContext context,
     required onTapConfirm,
@@ -115,10 +161,12 @@ class ShowModal {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     )),
-                const SizedBox(height: 5),
+                const SizedBox(height: 8),
                 const Text(
-                    'There was an error when trying to logout. Please try again.',
-                    style: TextStyle(fontSize: 18)),
+                  'There was an error when trying to logout. Please try again.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
                 const SizedBox(height: 20),
                 ExpatrioButton(
                   isPrimary: false,
@@ -161,9 +209,54 @@ class ShowModal {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     )),
-                const SizedBox(height: 5),
+                const SizedBox(height: 8),
                 Text('You need to login to access $screenName.',
                     style: const TextStyle(fontSize: 18)),
+                const SizedBox(height: 20),
+                ExpatrioButton(
+                  isPrimary: false,
+                  onPressed: () {
+                    onTapConfirm();
+                  },
+                  text: 'OK',
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void unableToLoginDueToNoInternet({
+    required BuildContext context,
+    required onTapConfirm,
+  }) {
+    showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 300,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Icon(Icons.signal_wifi_connected_no_internet_4_outlined,
+                    size: 50, color: Colors.grey),
+                const SizedBox(height: 20),
+                const Text('Unable to Login',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: 300,
+                  child: Text(
+                      'You tried to login to login but you dont have internet connection. Please connect to internet and try to login again.',
+                      style: const TextStyle(fontSize: 18)),
+                ),
                 const SizedBox(height: 20),
                 ExpatrioButton(
                   isPrimary: false,
