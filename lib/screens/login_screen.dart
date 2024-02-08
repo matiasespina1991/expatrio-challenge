@@ -63,31 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
               opacity: const AlwaysStoppedAnimation(.30),
             ),
           ),
-          if (_isHelpButtonVisible)
-            Positioned(
-              left: 20,
-              bottom: 20,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  surfaceTintColor: ExpatrioTheme.secondaryColor,
-                  backgroundColor: ExpatrioTheme.secondaryColor,
-                  minimumSize: const Size(100, 50),
-                ),
-                onPressed: () {},
-                child: const Row(
-                  children: [
-                    Icon(Icons.help_outline,
-                        size: 25, color: ExpatrioTheme.primaryColor),
-                    SizedBox(width: 2),
-                    Text('Help',
-                        style: TextStyle(
-                            color: ExpatrioTheme.primaryColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold))
-                  ],
-                ),
-              ),
-            ),
           SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Center(
@@ -202,6 +177,31 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
+          if (_isHelpButtonVisible)
+            Positioned(
+              left: 20,
+              bottom: 30,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  surfaceTintColor: ExpatrioTheme.secondaryColor,
+                  backgroundColor: ExpatrioTheme.secondaryColor,
+                  minimumSize: const Size(100, 50),
+                ),
+                onPressed: () {},
+                child: const Row(
+                  children: [
+                    Icon(Icons.help_outline,
+                        size: 25, color: ExpatrioTheme.primaryColor),
+                    SizedBox(width: 2),
+                    Text('Help',
+                        style: TextStyle(
+                            color: ExpatrioTheme.primaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold))
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
