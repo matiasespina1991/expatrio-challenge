@@ -13,6 +13,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> _loadAuthToken() async {
     _authToken = await storage.read(key: 'auth_token');
+
     notifyListeners();
   }
 
@@ -26,6 +27,10 @@ class AuthProvider with ChangeNotifier {
     await storage.delete(key: 'auth_token');
     _authToken = null;
     notifyListeners();
+  }
+
+  Future<void> logout() async {
+    await clearAuthToken();
   }
 
   bool get isAuthenticated => _authToken != null && _authToken!.isNotEmpty;

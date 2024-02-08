@@ -5,19 +5,23 @@ import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/authentication_provider.dart';
 import '../widgets/buttons.dart';
+import '../widgets/modals.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final AuthenticationService _authService = AuthenticationService();
+class LoginScreenState extends State<LoginScreen> {
+  late AuthenticationService _authService;
   final storage = const FlutterSecureStorage();
+  final showModal = ShowModal();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FocusNode _emailFocusNode = FocusNode();
@@ -29,9 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    // Listeners para los FocusNode
     _emailFocusNode.addListener(_onFocusChange);
     _passwordFocusNode.addListener(_onFocusChange);
+    _authService = AuthenticationService(
+      authProvider: Provider.of<AuthProvider>(context, listen: false),
+    );
   }
 
   @override
@@ -220,11 +226,31 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
-    await _authService.login(
+    bool isLoggedIn = await _authService.login(
       context: context,
       emailController: _emailController,
       passwordController: _passwordController,
     );
+
+    if (isLoggedIn) {
+      showModal.successfulLogin(
+        context: context,
+        onTapConfirm: () {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardScreen()),
+          );
+        },
+      );
+    } else {
+      showModal.failedLogin(
+        context: context,
+        onTapConfirm: () {
+          Navigator.of(context).pop();
+        },
+      );
+    }
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
   }

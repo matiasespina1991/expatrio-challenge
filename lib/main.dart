@@ -3,7 +3,6 @@ import 'package:expatrio_challenge/screens/dashboard_screen.dart';
 import 'package:expatrio_challenge/screens/login_screen.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 void main() {
