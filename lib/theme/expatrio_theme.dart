@@ -25,6 +25,24 @@ class ExpatrioTheme {
   );
 }
 
+const _textTheme = TextTheme(
+  displayLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
+  displayMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
+  displaySmall: TextStyle(height: 1.3, letterSpacing: -0.6),
+  headlineLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
+  headlineMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
+  headlineSmall: TextStyle(height: 1.3, letterSpacing: -0.6),
+  titleLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
+  titleMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
+  titleSmall: TextStyle(height: 1.3, letterSpacing: -0.6),
+  bodyLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
+  bodyMedium: TextStyle(height: 1.2, letterSpacing: -0.6),
+  bodySmall: TextStyle(height: 1.3, letterSpacing: -0.6),
+  labelLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
+  labelMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
+  labelSmall: TextStyle(height: 1.3, letterSpacing: -0.6),
+);
+
 class CustomPageTransitionBuilder extends PageTransitionsBuilder {
   @override
   Widget buildTransitions<T>(
@@ -42,24 +60,3 @@ class CustomPageTransitionBuilder extends PageTransitionsBuilder {
     );
   }
 }
-
-const _textTheme = TextTheme(
-  displayLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
-  displayMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
-  displaySmall: TextStyle(height: 1.3, letterSpacing: -0.6),
-  headlineLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
-  headlineMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
-  headlineSmall: TextStyle(height: 1.3, letterSpacing: -0.6),
-  titleLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
-  titleMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
-  titleSmall: TextStyle(height: 1.3, letterSpacing: -0.6),
-  bodyLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
-  bodyMedium: TextStyle(
-    height: 1.2,
-    letterSpacing: -0.6,
-  ),
-  bodySmall: TextStyle(height: 1.3, letterSpacing: -0.6),
-  labelLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
-  labelMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
-  labelSmall: TextStyle(height: 1.3, letterSpacing: -0.6),
-);

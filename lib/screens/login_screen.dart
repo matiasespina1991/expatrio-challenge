@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/screens/dashboard_screen.dart';
 import 'package:expatrio_challenge/services/authentication_service.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 
@@ -187,7 +188,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   backgroundColor: ExpatrioTheme.secondaryColor,
                   minimumSize: const Size(100, 50),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const DashboardScreen()));
+                },
                 child: const Row(
                   children: [
                     Icon(Icons.help_outline,

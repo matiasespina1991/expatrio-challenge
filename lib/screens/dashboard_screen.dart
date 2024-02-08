@@ -2,8 +2,10 @@ import 'package:expatrio_challenge/widgets/buttons.dart';
 import 'package:expatrio_challenge/widgets/modals.dart';
 import 'package:flutter/material.dart';
 
+import '../providers/authentication_provider.dart';
 import '../services/authentication_service.dart';
 import '../theme/expatrio_theme.dart';
+import 'login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
@@ -17,9 +19,15 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final AuthenticationService _authService = AuthenticationService();
   final ShowModal _showModal = ShowModal();
+  final _authProvider = AuthProvider();
 
   @override
   Widget build(BuildContext context) {
+    /// If the user is not authenticated, we show the login screen
+    if (!_authProvider.isAuthenticated) {
+      return const LoginScreen();
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
