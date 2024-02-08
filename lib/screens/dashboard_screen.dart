@@ -15,6 +15,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _showNoInternetSnackbar = false;
+  bool _goBackPressed = false;
   late final ConnectivityProvider _connectivityProvider;
 
   @override
@@ -54,8 +55,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (!authProvider.isAuthenticated) {
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const LoginScreen(
-                userTriedUnauthorizedAccess: 'dashboard',
+              builder: (context) => LoginScreen(
+                userTriedUnauthorizedAccess:
+                    _goBackPressed ? null : 'dashboard',
               ),
             ));
           });
@@ -68,6 +70,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return PopScope(
           canPop: true,
           onPopInvoked: (didPop) async {
+            setState(() {
+              _goBackPressed = didPop;
+            });
             await goBack(context);
           },
           child: Scaffold(
@@ -135,6 +140,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> goBack(BuildContext context) async {
     try {
+      setState(() {
+        _goBackPressed = true;
+      });
       await Provider.of<AuthProvider>(context, listen: false).logout();
     } catch (e) {
       debugPrint('Error when attempting to logout: $e');
