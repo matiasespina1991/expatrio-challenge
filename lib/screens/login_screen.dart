@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
-import '../utilities/is_email_valid.dart';
+import '../utilities/validate_email.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 
@@ -246,8 +246,8 @@ class LoginScreenState extends State<LoginScreen>
                   minimumSize: const Size(100, 50),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const DashboardScreen()));
+                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //     builder: (context) => const DashboardScreen()));
                 },
                 child: const Row(
                   children: [
