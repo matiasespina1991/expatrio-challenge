@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../widgets/buttons.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -160,14 +162,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: !_isPasswordVisible,
                     ),
                     const SizedBox(height: 25.0),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
+                    ExpatrioButton(
+                      fullWidth: true,
                       onPressed: () {
                         attemptLogin(context);
                       },
-                      child: const Text('LOGIN'),
+                      text: 'Login',
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 450,

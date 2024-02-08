@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/expatrio_theme.dart';
+import 'buttons.dart';
 
 class ShowModal {
   void successfulLogin({
@@ -33,11 +34,11 @@ class ShowModal {
                 const Text('You will be redirected to your dashboard',
                     style: TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
-                ElevatedButton(
+                ExpatrioButton(
                   onPressed: () {
                     onTapConfirm();
                   },
-                  child: const Text('GOT IT'), // Texto del botón
+                  text: 'Got it',
                 ),
               ],
             ),
@@ -75,15 +76,12 @@ class ShowModal {
                 const SizedBox(height: 5),
                 const Text('Please try again', style: TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
-                  ),
-                  onPressed: () {
-                    onTapConfirm();
-                  },
-                  child: const Text('OK'), // Texto del botón
-                ),
+                ExpatrioButton(
+                    isPrimary: false,
+                    onPressed: () {
+                      onTapConfirm();
+                    },
+                    text: 'Ok'),
               ],
             ),
           ),
@@ -122,14 +120,12 @@ class ShowModal {
                     'There was an error when trying to logout. Please try again.',
                     style: TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
-                  ),
+                ExpatrioButton(
+                  isPrimary: false,
                   onPressed: () {
                     onTapConfirm();
                   },
-                  child: const Text('OK'), // Texto del botón
+                  text: 'OK',
                 ),
               ],
             ),
@@ -167,11 +163,11 @@ class ShowModal {
                         fontWeight: FontWeight.bold,
                       )),
                   const SizedBox(height: 100),
-                  ElevatedButton(
+                  ExpatrioButton(
                     onPressed: () {
                       onTapConfirm();
                     },
-                    child: const Text('GOT IT'), // Texto del botón
+                    text: 'Got it',
                   ),
                 ],
               ),

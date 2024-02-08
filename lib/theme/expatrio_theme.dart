@@ -4,9 +4,6 @@ class ExpatrioTheme {
   static const Color primaryColor = Color(0xFF40AF9E);
   static const Color secondaryColor = Colors.white;
 
-  // height: 1.3,
-  // letterSpacing: -0.6,
-
   static ThemeData themeData = ThemeData(
     fontFamily: 'Acumin Pro',
     textTheme: _textTheme,
@@ -15,26 +12,6 @@ class ExpatrioTheme {
         TargetPlatform.android: CustomPageTransitionBuilder(),
         TargetPlatform.iOS: CustomPageTransitionBuilder(),
       },
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-            (Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
-            return Colors.grey.shade400;
-          }
-          return primaryColor;
-        }),
-        foregroundColor: MaterialStateProperty.all(Colors.white),
-        minimumSize: MaterialStateProperty.all(const Size(200, 50)),
-        textStyle: MaterialStateProperty.all(
-          const TextStyle(
-            fontFamily: 'Acumin Pro',
-            fontSize: 16,
-            height: 1.7,
-          ),
-        ),
-      ),
     ),
     colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
     appBarTheme: const AppBarTheme(
@@ -77,7 +54,10 @@ const _textTheme = TextTheme(
   titleMedium: TextStyle(height: 1.3, letterSpacing: -0.6),
   titleSmall: TextStyle(height: 1.3, letterSpacing: -0.6),
   bodyLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
-  bodyMedium: TextStyle(height: 1.2, letterSpacing: -0.6, fontSize: 20),
+  bodyMedium: TextStyle(
+    height: 1.2,
+    letterSpacing: -0.6,
+  ),
   bodySmall: TextStyle(height: 1.3, letterSpacing: -0.6),
   labelLarge: TextStyle(height: 1.3, letterSpacing: -0.6),
   labelMedium: TextStyle(height: 1.3, letterSpacing: -0.6),

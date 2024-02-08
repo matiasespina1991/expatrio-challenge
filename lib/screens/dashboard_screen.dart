@@ -43,13 +43,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              SizedBox(
+              const SizedBox(
                 width: 220,
                 child: Text(
-                  'We need your tax data in order for you to access your account.',
-                  textAlign: TextAlign.center,
-                  style: ExpatrioTheme.themeData.textTheme.bodyMedium,
-                ),
+                    'We need your tax data in order for you to access your account.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                    )),
               ),
               const SizedBox(height: 35),
               ExpatrioButton(
