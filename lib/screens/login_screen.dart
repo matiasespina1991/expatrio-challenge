@@ -38,6 +38,7 @@ class LoginScreenState extends State<LoginScreen>
   final FocusNode _passwordFocusNode = FocusNode();
   late ConnectivityProvider _connectivityProvider;
 
+  bool _isEmailValid = true;
   bool _isPasswordVisible = false;
   bool _isHelpButtonVisible = true;
   bool _attemptingLogin = false;
@@ -144,6 +145,13 @@ class LoginScreenState extends State<LoginScreen>
                     TextField(
                       controller: _emailController,
                       focusNode: _emailFocusNode,
+                      onChanged: (value) {
+                        if (isEmailValid(value)) {
+                          setState(() {
+                            _isEmailValid = true;
+                          });
+                        }
+                      },
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white.withAlpha(220),
@@ -153,6 +161,15 @@ class LoginScreenState extends State<LoginScreen>
                             Radius.circular(7),
                           ),
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 1.0),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(7),
+                          ),
+                        ),
+                        errorText: _isEmailValid
+                            ? null
+                            : 'Please insert a valid email',
                       ),
                     ),
                     const SizedBox(height: 20.0),
@@ -251,6 +268,9 @@ class LoginScreenState extends State<LoginScreen>
   }
 
   void attemptLogin(context) async {
+    setState(() {
+      _isEmailValid = true;
+    });
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       List<String> emptyFields = [];
       if (_emailController.text.isEmpty) {
@@ -267,6 +287,13 @@ class LoginScreenState extends State<LoginScreen>
           Navigator.of(context).pop();
         },
       );
+      return;
+    }
+
+    if (!isEmailValid(_emailController.text)) {
+      setState(() {
+        _isEmailValid = false;
+      });
       return;
     }
 
@@ -320,5 +347,12 @@ class LoginScreenState extends State<LoginScreen>
     }
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  }
+
+  bool isEmailValid(String email) {
+    final emailRegExp = RegExp(
+      r'^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
+    );
+    return emailRegExp.hasMatch(email);
   }
 }
