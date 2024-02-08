@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/widgets/tax_data_modal_content.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/expatrio_theme.dart';
@@ -275,7 +276,7 @@ class ShowModal {
 
   void updateTaxData({
     required BuildContext context,
-    required onTapConfirm,
+    required VoidCallback onTapConfirm,
   }) {
     showModalBottomSheet(
       enableDrag: false,
@@ -283,35 +284,7 @@ class ShowModal {
       isDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return Padding(
-          padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 60, bottom: 20),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            width: MediaQuery.of(context).size.width,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Text('Declaration of financial information',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  const SizedBox(height: 100),
-                  ExpatrioButton(
-                    onPressed: () {
-                      onTapConfirm();
-                    },
-                    text: 'Got it',
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+        return TaxDataModalContent(onTapConfirm: onTapConfirm);
       },
     );
   }
