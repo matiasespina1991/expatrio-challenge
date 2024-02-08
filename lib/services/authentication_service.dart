@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:expatrio_challenge/models/user_auth_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -26,8 +27,10 @@ class AuthenticationService {
     );
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final accessToken = data['accessToken'];
+      final UserAuthDataModel data =
+          UserAuthDataModel.fromJson(jsonDecode(response.body));
+      final accessToken = data.accessToken;
+      final userId = data.userId;
 
       if (accessToken == null) {
         debugPrint('Login failed.');
@@ -37,6 +40,7 @@ class AuthenticationService {
       }
 
       await storage.write(key: 'auth_token', value: accessToken);
+      await storage.write(key: 'user_id', value: userId);
 
       debugPrint('Login successful.');
 

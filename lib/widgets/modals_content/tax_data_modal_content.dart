@@ -80,7 +80,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                     const SizedBox(height: 22),
                     Text('Tax identification number*'.toUpperCase(),
                         style: const TextStyle(fontSize: 13)),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     const TextField(
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -91,7 +91,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                             Radius.circular(7),
                           ),
                         ),
-                        hintStyle: const TextStyle(fontSize: 14),
+                        hintStyle: TextStyle(fontSize: 14),
                         hintText: 'Enter your tax identification number',
                       ),
                     ),

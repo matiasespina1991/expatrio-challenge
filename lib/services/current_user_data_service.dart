@@ -6,15 +6,15 @@ import 'package:http/http.dart' as http;
 class CurrentUserData {
   final storage = const FlutterSecureStorage();
 
-  Future<Map<String, dynamic>?> fetchUserProfile() async {
+  Future<Map<String, dynamic>?> fetchUserProfile(String userId) async {
     final accessToken = await storage.read(key: 'auth_token');
     if (accessToken == null) {
       debugPrint('Access token not found.');
       return null;
     }
 
-    const userProfileEndpoint =
-        'https://dev-api.expatrio.com/portal/users/:userId/profile';
+    String userProfileEndpoint =
+        'https://dev-api.expatrio.com/portal/users/$userId/profile';
 
     final response = await http.get(
       Uri.parse(userProfileEndpoint),
