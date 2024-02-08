@@ -34,9 +34,6 @@ class ExpatrioTheme {
       surfaceTintColor: Colors.white,
       foregroundColor: Colors.black,
     ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      foregroundColor: Colors.white,
-    ),
     useMaterial3: true,
   );
 }

@@ -69,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
               bottom: 20,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  surfaceTintColor: ExpatrioTheme.secondaryColor,
                   backgroundColor: ExpatrioTheme.secondaryColor,
                   minimumSize: const Size(100, 50),
                 ),
@@ -111,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Padding(
                       padding: EdgeInsets.only(bottom: 8.0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Icon(Icons.email_outlined),
                           SizedBox(
@@ -130,13 +132,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         filled: true,
                         fillColor: Colors.white.withAlpha(220),
                         hintText: 'Email',
-                        border: const OutlineInputBorder(),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(7),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20.0),
                     const Padding(
                       padding: EdgeInsets.only(bottom: 8.0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Icon(Icons.lock_outline),
                           SizedBox(
@@ -156,7 +163,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         filled: true,
                         fillColor: Colors.white.withAlpha(220),
                         hintText: 'Password',
-                        border: const OutlineInputBorder(),
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(7),
+                          ),
+                        ),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _isPasswordVisible
