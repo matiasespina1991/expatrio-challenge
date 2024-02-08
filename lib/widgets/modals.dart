@@ -138,4 +138,38 @@ class ShowModal {
       },
     );
   }
+
+  void updateTaxData({
+    required BuildContext context,
+    required onTapConfirm,
+  }) {
+    showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 300,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('Update Tax Data',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    onTapConfirm();
+                  },
+                  child: const Text('GOT IT'), // Texto del botón
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

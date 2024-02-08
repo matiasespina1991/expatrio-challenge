@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/widgets/modals.dart';
 import 'package:flutter/material.dart';
 
 import '../services/authentication_service.dart';
@@ -14,6 +15,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final AuthenticationService _authService = AuthenticationService();
+  final ShowModal _showModal = ShowModal();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _showModal.updateTaxData(
+                      context: context, onTapConfirm: confirmUpdateTaxData);
+                },
                 child: const Text('UPDATE YOUR TAX DATA'),
               ),
             ],
@@ -61,6 +66,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       ),
     );
+  }
+
+  void confirmUpdateTaxData() {
+    Navigator.maybePop(context);
   }
 
   Future<void> goBack(context) async {
