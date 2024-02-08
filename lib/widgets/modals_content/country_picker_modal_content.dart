@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../data/countries_list.dart';
+import '../../data/countries_list.dart';
 
 class CountryPickerModal extends StatefulWidget {
   final Function(String) onCountrySelected;

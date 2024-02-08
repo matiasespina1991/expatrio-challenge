@@ -28,7 +28,8 @@
     <string>This app needs access to your network to detect internet connectivity and provide a better user experience.</string>
     <key>NSLocalNetworkUsageDescription</key>
     <string>This app needs access to your network to detect internet connectivity and provide a better user experience.</string>
-
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

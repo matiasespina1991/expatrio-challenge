@@ -1,9 +1,9 @@
-import 'package:expatrio_challenge/widgets/tax_data_modal_content.dart';
+import 'package:expatrio_challenge/widgets/modals_content/tax_data_modal_content.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/expatrio_theme.dart';
 import 'buttons.dart';
-import 'country_picker_modal_content.dart';
+import 'modals_content/country_picker_modal_content.dart';
 
 class ShowModal {
   void successfulLogin({
