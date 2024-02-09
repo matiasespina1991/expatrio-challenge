@@ -96,29 +96,36 @@ class DashboardScreenState extends State<DashboardScreen>
               child: SizedBox(
                 width: 280,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     if (userName != null)
                       Column(
                         children: [
-                          Text(
-                            'Welcome back',
-                            style: const TextStyle(
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            '$userName.',
-                            style: const TextStyle(
-                              fontSize: 27,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Container(
+                            height: 200,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'Welcome back,',
+                                    style: TextStyle(
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    '$userName.',
+                                    style: const TextStyle(
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ]),
                           ),
                         ],
                       ),
-                    SizedBox(height: userName != null ? 50 : 0),
+                    SizedBox(height: userName != null ? 30 : 0),
                     const Text(
                       'Uh-Oh!',
                       style: TextStyle(
