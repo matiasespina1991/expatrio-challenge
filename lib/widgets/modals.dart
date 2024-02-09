@@ -32,7 +32,7 @@ class ShowModal {
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     )),
-                const SizedBox(height: 5),
+                const SizedBox(height: 8),
                 const Text('You will be redirected to your dashboard',
                     style: TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),

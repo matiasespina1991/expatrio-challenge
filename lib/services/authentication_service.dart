@@ -1,19 +1,24 @@
 import 'dart:convert';
 import 'package:expatrio_challenge/models/login_attempt_response.dart';
 import 'package:expatrio_challenge/models/user_auth_data_model.dart';
+import 'package:expatrio_challenge/models/user_data_model.dart';
+import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../providers/authentication_provider.dart';
 
+import '../providers/user_data_provider.dart';
 import '../widgets/modals.dart';
 
 class AuthenticationService {
   final storage = const FlutterSecureStorage();
   final showModal = ShowModal();
   final AuthProvider authProvider;
+  final UserDataProvider userDataProvider;
 
-  AuthenticationService({required this.authProvider});
+  AuthenticationService(
+      {required this.authProvider, required this.userDataProvider});
 
   Future<LoginAttemptResponseModel> login(
       {context, emailController, passwordController}) async {
@@ -53,6 +58,19 @@ class AuthenticationService {
         await storage.write(key: 'user_id', value: userId);
 
         debugPrint('Login successful.');
+
+        debugPrint('Fetching user data...');
+
+        UserDataModel? currentUserData =
+            await CurrentUserData().fetchUserProfile();
+
+        if (currentUserData != null) {
+          debugPrint('User data fetched successfully.');
+
+          userDataProvider.setUserData(currentUserData);
+        } else {
+          debugPrint('ERROR: User data not found.');
+        }
 
         return LoginAttemptResponseModel(
             successful: true,

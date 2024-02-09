@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:expatrio_challenge/providers/user_auth_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
+import '../models/user_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
+import '../providers/user_data_provider.dart';
 import '../services/current_user_data_service.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
@@ -120,15 +124,17 @@ class DashboardScreenState extends State<DashboardScreen>
                       fullWidth: true,
                       text: 'Fetch user data',
                       onPressed: () async {
-                        final userId = await storage.read(key: 'user_id');
-                        if (userId == null) {
-                          debugPrint('User ID not found.');
-                          return;
+                        UserDataProvider userDataProvider =
+                            Provider.of<UserDataProvider>(context,
+                                listen: false);
+                        UserDataModel? userData = userDataProvider.userData;
+
+                        if (userData != null) {
+                          print(
+                              'Nombre del usuario: ${userData.firstName} ${userData.lastName}');
+                        } else {
+                          print('No se encontraron datos del usuario.');
                         }
-                        debugPrint('User ID found: $userId');
-                        Map<String, dynamic>? data =
-                            await _currentUserData.fetchUserProfile();
-                        print('data found: $data');
                       },
                     ),
                   ],
