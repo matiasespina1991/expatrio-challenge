@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/models/login_attempt_response.dart';
 import 'package:expatrio_challenge/screens/dashboard_screen.dart';
 import 'package:expatrio_challenge/services/authentication_service.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
+import '../utilities/error_code_to_message.dart';
 import '../utilities/validate_email.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
@@ -309,19 +311,22 @@ class LoginScreenState extends State<LoginScreen>
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
+        duration: Duration(minutes: 2),
         content: Text(
           'Trying to login...',
         ),
       ),
     );
 
-    bool isLoggedIn = await _authService.login(
+    LoginAttemptResponseModel loginAttempt = await _authService.login(
       context: context,
       emailController: _emailController,
       passwordController: _passwordController,
     );
 
-    if (isLoggedIn) {
+    String errorMessage = errorCodesToMessage(loginAttempt.errorCode);
+
+    if (loginAttempt.successful) {
       showModal.successfulLogin(
         context: context,
         onTapConfirm: () async {
@@ -330,8 +335,12 @@ class LoginScreenState extends State<LoginScreen>
           var authenticationSuccessful =
               await _authService.authenticate(context);
 
+          debugPrint('ERROR: Authentication failed despite successful login.');
+
           if (!authenticationSuccessful) {
             showModal.failedLogin(
+              errorMessage:
+                  'There was an error when trying to authenticate your credentials. Please try again later or contact the administrators.',
               context: context,
               onTapConfirm: () {
                 Navigator.of(context).pop();
@@ -348,6 +357,7 @@ class LoginScreenState extends State<LoginScreen>
       );
     } else {
       showModal.failedLogin(
+        errorMessage: errorMessage,
         context: context,
         onTapConfirm: () {
           setState(() {

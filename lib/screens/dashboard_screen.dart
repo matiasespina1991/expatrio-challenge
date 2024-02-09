@@ -127,7 +127,7 @@ class DashboardScreenState extends State<DashboardScreen>
                         }
                         debugPrint('User ID found: $userId');
                         Map<String, dynamic>? data =
-                            await _currentUserData.fetchUserProfile(userId);
+                            await _currentUserData.fetchUserProfile();
                         print('data found: $data');
                       },
                     ),

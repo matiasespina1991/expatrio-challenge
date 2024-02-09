@@ -53,9 +53,11 @@ class ShowModal {
   void failedLogin({
     required BuildContext context,
     required onTapConfirm,
+    required String errorMessage,
   }) {
     showModalBottomSheet(
       isDismissible: false,
+      enableDrag: false,
       context: context,
       builder: (BuildContext context) {
         return SizedBox(
@@ -69,15 +71,23 @@ class ShowModal {
                   radius: 30,
                   child: const Icon(Icons.close, size: 50, color: Colors.white),
                 ),
-                const SizedBox(height: 20),
-                const Text('Login failed',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    )),
-                const SizedBox(height: 8),
-                const Text('Please try again', style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
+                const Padding(
+                  padding: EdgeInsets.all(2.0),
+                  child: Text('Login failed',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 32.0, vertical: 12.0),
+                  child: Text(errorMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 18)),
+                ),
+                const SizedBox(height: 12),
                 ExpatrioButton(
                     isPrimary: false,
                     onPressed: () {

@@ -6,7 +6,15 @@ import 'package:http/http.dart' as http;
 class CurrentUserData {
   final storage = const FlutterSecureStorage();
 
-  Future<Map<String, dynamic>?> fetchUserProfile(String userId) async {
+  Future<Map<String, dynamic>?> fetchUserProfile() async {
+    late String? userId;
+
+    userId = await storage.read(key: 'user_id');
+    if (userId == null) {
+      debugPrint('ErrorUser ID not found.');
+      return null;
+    }
+
     final accessToken = await storage.read(key: 'auth_token');
     if (accessToken == null) {
       debugPrint('Access token not found.');

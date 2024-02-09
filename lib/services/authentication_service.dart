@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:expatrio_challenge/models/login_attempt_response.dart';
 import 'package:expatrio_challenge/models/user_auth_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,56 +15,96 @@ class AuthenticationService {
 
   AuthenticationService({required this.authProvider});
 
-  Future<bool> login({context, emailController, passwordController}) async {
+  Future<LoginAttemptResponseModel> login(
+      {context, emailController, passwordController}) async {
     const authEndpoint = 'https://dev-api.expatrio.com/auth/login';
 
-    final response = await http.post(
-      Uri.parse(authEndpoint),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'email': emailController.text,
-        'password': passwordController.text,
-      }),
-    );
+    debugPrint('Attempting to login...');
 
-    if (response.statusCode == 200) {
-      final UserAuthDataModel data =
-          UserAuthDataModel.fromJson(jsonDecode(response.body));
-      final accessToken = data.accessToken;
-      final userId = data.userId;
+    try {
+      final response = await http.post(
+        Uri.parse(authEndpoint),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': emailController.text,
+          'password': passwordController.text,
+        }),
+      );
 
-      if (accessToken == null) {
+      if (response.statusCode == 200) {
+        final UserAuthDataModel data =
+            UserAuthDataModel.fromJson(jsonDecode(response.body));
+        final String accessToken = data.accessToken;
+        final String userId = data.userId;
+
+        if (accessToken == null) {
+          debugPrint('Login failed.');
+          debugPrint(
+              'Reason of failed login: The login request seemed to be successful but accessToken inside the response returned null.');
+          return LoginAttemptResponseModel(
+              successful: false,
+              message:
+                  'Unknown Error. Please try again later or contact administrators.',
+              statusCode: 500,
+              errorCode: 'ACCESS_TOKEN_NULL');
+        }
+
+        await storage.write(key: 'auth_token', value: accessToken);
+        await storage.write(key: 'user_id', value: userId);
+
+        debugPrint('Login successful.');
+
+        return LoginAttemptResponseModel(
+            successful: true,
+            message: 'Login successful',
+            statusCode: 200,
+            errorCode: null);
+      } else {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final String errorMessage =
+            responseBody['message'] ?? 'Unkown error. Please try again later.';
+        final String errorCode = responseBody['errorCode'];
+
         debugPrint('Login failed.');
-        debugPrint(
-            'Reason of failed login: The login request seemed to be successful but accessToken inside the response returned null.');
-        return false;
+        debugPrint('Login error status: ${response.statusCode}');
+        debugPrint('Reason of failed login: $errorMessage');
+        debugPrint('Error code: $errorCode');
+        return LoginAttemptResponseModel(
+            successful: false,
+            message: errorMessage,
+            statusCode: response.statusCode,
+            errorCode: errorCode);
       }
-
-      await storage.write(key: 'auth_token', value: accessToken);
-      await storage.write(key: 'user_id', value: userId);
-
-      debugPrint('Login successful.');
-
-      return true;
-    } else {
+    } catch (e) {
       debugPrint('Login failed.');
-      debugPrint('Login error status: ${response.statusCode}');
-      debugPrint('Reason of failed login: ${response.body}');
-      return false;
+      debugPrint('Login failed due to the following error: $e');
+
+      return LoginAttemptResponseModel(
+          successful: false,
+          message:
+              'Unknown Error. Please try again later or contact administrators.',
+          statusCode: 500,
+          errorCode: 'UNKNOWN_ERROR');
     }
   }
 
   Future<bool> authenticate(context) async {
-    final accessToken = await storage.read(key: 'auth_token').catchError((e) {
+    try {
+      final accessToken = await storage.read(key: 'auth_token').catchError((e) {
+        debugPrint('Error reading token: $e');
+        return e;
+      });
+
+      if (accessToken != null) {
+        await authProvider.setAuthToken(accessToken);
+      }
+
+      return accessToken != null;
+    } catch (e) {
       debugPrint('Error reading token: $e');
-      return e;
-    });
 
-    if (accessToken != null) {
-      await authProvider.setAuthToken(accessToken);
+      return false;
     }
-
-    return accessToken != null;
   }
 
   Future<bool> logout({context}) async {
