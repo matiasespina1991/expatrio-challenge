@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:expatrio_challenge/models/user_tax_data_model.dart';
 import 'package:expatrio_challenge/providers/user_auth_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +10,7 @@ import '../models/user_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
 import '../providers/user_data_provider.dart';
+import '../services/current_user_tax_data_service.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 import 'login_screen.dart';
@@ -153,12 +155,21 @@ class DashboardScreenState extends State<DashboardScreen>
                       fullWidth: true,
                       text: 'Fetch user data',
                       onPressed: () async {
-                        UserDataModel? userData = userDataProvider.userData;
+                        // UserDataModel? userData = userDataProvider.userData;
+                        //
+                        // if (userData != null) {
+                        //   log('User Data: ${userData.toJson()}');
+                        // } else {
+                        //   debugPrint('User data not found.');
+                        // }
 
-                        if (userData != null) {
-                          log('User Data: ${userData.toJson()}');
+                        UserTaxDataModel? userTaxData =
+                            await CurrentUserTaxData().fetchUserTaxData();
+
+                        if (userTaxData != null) {
+                          log('User Tax Data: ${userTaxData.toJson()}');
                         } else {
-                          debugPrint('User data not found.');
+                          debugPrint('User tax data not found.');
                         }
                       },
                     ),

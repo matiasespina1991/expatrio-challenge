@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:expatrio_challenge/models/user_tax_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -6,15 +7,25 @@ import 'package:http/http.dart' as http;
 class CurrentUserTaxData {
   final storage = const FlutterSecureStorage();
 
-  Future<Map<String, dynamic>?> fetchUserTaxData() async {
+  Future<UserTaxDataModel?> fetchUserTaxData() async {
+    late String? userId;
+
+    debugPrint('Fetching user tax data...');
+
+    userId = await storage.read(key: 'user_id');
+    if (userId == null) {
+      debugPrint('Error: User ID not found.');
+      return null;
+    }
+
     final accessToken = await storage.read(key: 'auth_token');
     if (accessToken == null) {
       debugPrint('Access token not found.');
       return null;
     }
 
-    const taxDataEndpoint =
-        'https://dev-api.expatrio.com/v3/customers/:id/tax-data'; // Reemplaza :id con el ID real del cliente.
+    String taxDataEndpoint =
+        'https://dev-api.expatrio.com/v3/customers/$userId/tax-data';
 
     final response = await http.get(
       Uri.parse(taxDataEndpoint),
@@ -25,7 +36,9 @@ class CurrentUserTaxData {
     );
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      debugPrint('Tax data fetched successfully.');
+      final UserTaxDataModel data =
+          UserTaxDataModel.fromJson(jsonDecode(response.body));
       return data;
     } else {
       debugPrint(
