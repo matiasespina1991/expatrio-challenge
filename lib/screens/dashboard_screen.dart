@@ -24,11 +24,22 @@ class DashboardScreenState extends State<DashboardScreen>
   late ConnectivityProvider _connectivityProvider;
   final storage = const FlutterSecureStorage();
   late UserDataProvider userDataProvider;
+  late String? userName;
+
+  String? getUserName() {
+    final userFirstName = userDataProvider.userData?.firstName;
+    final userLastName = userDataProvider.userData?.lastName;
+    if (userFirstName == null || userLastName == null) {
+      return null;
+    }
+    return '$userFirstName $userLastName';
+  }
 
   @override
   void initState() {
     super.initState();
     userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+    userName = getUserName();
     _connectivityProvider =
         Provider.of<ConnectivityProvider>(context, listen: false);
     _connectivityProvider.addListener(() {
@@ -83,6 +94,27 @@ class DashboardScreenState extends State<DashboardScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    if (userName != null)
+                      Column(
+                        children: [
+                          Text(
+                            'Welcome back',
+                            style: const TextStyle(
+                              fontSize: 27,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            '$userName.',
+                            style: const TextStyle(
+                              fontSize: 27,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    SizedBox(height: userName != null ? 50 : 0),
                     const Text(
                       'Uh-Oh!',
                       style: TextStyle(
@@ -122,10 +154,9 @@ class DashboardScreenState extends State<DashboardScreen>
                         UserDataModel? userData = userDataProvider.userData;
 
                         if (userData != null) {
-                          debugPrint(
-                              'Nombre del usuario: ${userData.firstName} ${userData.lastName}');
+                          debugPrint('User Data: ${userData.toJson()}');
                         } else {
-                          debugPrint('No se encontraron datos del usuario.');
+                          debugPrint('User data not found.');
                         }
                       },
                     ),
