@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expatrio_challenge/providers/user_auth_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -154,7 +156,7 @@ class DashboardScreenState extends State<DashboardScreen>
                         UserDataModel? userData = userDataProvider.userData;
 
                         if (userData != null) {
-                          debugPrint('User Data: ${userData.toJson()}');
+                          log('User Data: ${userData.toJson()}');
                         } else {
                           debugPrint('User data not found.');
                         }
