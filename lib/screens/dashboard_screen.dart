@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:expatrio_challenge/models/user_tax_data_model.dart';
 import 'package:expatrio_challenge/providers/user_auth_data_provider.dart';
+import 'package:expatrio_challenge/providers/user_tax_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -26,24 +27,18 @@ class DashboardScreenState extends State<DashboardScreen>
     with ConnectivitySnackBarMixin {
   bool _goBackPressed = false;
   late ConnectivityProvider _connectivityProvider;
-  final storage = const FlutterSecureStorage();
-  late UserDataProvider userDataProvider;
-  late String? userName;
-
-  String? getUserName() {
-    final userFirstName = userDataProvider.userData?.firstName;
-    final userLastName = userDataProvider.userData?.lastName;
-    if (userFirstName == null || userLastName == null) {
-      return null;
-    }
-    return '$userFirstName $userLastName';
-  }
+  final _storage = const FlutterSecureStorage();
+  late UserDataProvider _userDataProvider;
+  late UserTaxDataProvider _userTaxDataProvider;
+  late String? _userName;
 
   @override
   void initState() {
     super.initState();
-    userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
-    userName = getUserName();
+    _userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+    _userTaxDataProvider =
+        Provider.of<UserTaxDataProvider>(context, listen: false);
+    _userName = getUserName();
     _connectivityProvider =
         Provider.of<ConnectivityProvider>(context, listen: false);
     _connectivityProvider.addListener(() {
@@ -98,7 +93,7 @@ class DashboardScreenState extends State<DashboardScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    if (userName != null)
+                    if (_userName != null)
                       Column(
                         children: [
                           Container(
@@ -115,7 +110,7 @@ class DashboardScreenState extends State<DashboardScreen>
                                   ),
                                   const SizedBox(height: 5),
                                   Text(
-                                    '$userName.',
+                                    '$_userName.',
                                     style: const TextStyle(
                                       fontSize: 27,
                                       fontWeight: FontWeight.bold,
@@ -125,7 +120,7 @@ class DashboardScreenState extends State<DashboardScreen>
                           ),
                         ],
                       ),
-                    SizedBox(height: userName != null ? 30 : 0),
+                    const SizedBox(height: 40),
                     const Text(
                       'Uh-Oh!',
                       style: TextStyle(
@@ -171,7 +166,7 @@ class DashboardScreenState extends State<DashboardScreen>
                         // }
 
                         UserTaxDataModel? userTaxData =
-                            await CurrentUserTaxData().fetchUserTaxData();
+                            _userTaxDataProvider.userTaxData;
 
                         if (userTaxData != null) {
                           log('User Tax Data: ${userTaxData.toJson()}');
@@ -188,6 +183,15 @@ class DashboardScreenState extends State<DashboardScreen>
         );
       },
     );
+  }
+
+  String? getUserName() {
+    final userFirstName = _userDataProvider.userData?.firstName;
+    final userLastName = _userDataProvider.userData?.lastName;
+    if (userFirstName == null || userLastName == null) {
+      return null;
+    }
+    return '$userFirstName $userLastName';
   }
 
   Future<void> goBack(BuildContext context) async {
