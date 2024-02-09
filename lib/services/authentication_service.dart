@@ -42,18 +42,6 @@ class AuthenticationService {
         final String accessToken = data.accessToken;
         final String userId = data.userId;
 
-        if (accessToken == null) {
-          debugPrint('Login failed.');
-          debugPrint(
-              'Reason of failed login: The login request seemed to be successful but accessToken inside the response returned null.');
-          return LoginAttemptResponseModel(
-              successful: false,
-              message:
-                  'Unknown Error. Please try again later or contact administrators.',
-              statusCode: 500,
-              errorCode: 'ACCESS_TOKEN_NULL');
-        }
-
         await storage.write(key: 'auth_token', value: accessToken);
         await storage.write(key: 'user_id', value: userId);
 

@@ -39,7 +39,7 @@ class CountryPickerModalState extends State<CountryPickerModal> {
         return Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: TextField(
                 onChanged: _filterCountries,
                 decoration: const InputDecoration(

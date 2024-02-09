@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:expatrio_challenge/providers/user_auth_data_provider.dart';
-import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +7,6 @@ import '../models/user_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
 import '../providers/user_data_provider.dart';
-import '../services/current_user_data_service.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 import 'login_screen.dart';
@@ -27,13 +23,12 @@ class DashboardScreenState extends State<DashboardScreen>
   bool _goBackPressed = false;
   late ConnectivityProvider _connectivityProvider;
   final storage = const FlutterSecureStorage();
-
-  final CurrentUserData _currentUserData = CurrentUserData();
-  final CurrentUserTaxData _currentUserTaxData = CurrentUserTaxData();
+  late UserDataProvider userDataProvider;
 
   @override
   void initState() {
     super.initState();
+    userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
     _connectivityProvider =
         Provider.of<ConnectivityProvider>(context, listen: false);
     _connectivityProvider.addListener(() {
@@ -118,22 +113,19 @@ class DashboardScreenState extends State<DashboardScreen>
                         );
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     ExpatrioButton(
                       isPrimary: false,
                       fullWidth: true,
                       text: 'Fetch user data',
                       onPressed: () async {
-                        UserDataProvider userDataProvider =
-                            Provider.of<UserDataProvider>(context,
-                                listen: false);
                         UserDataModel? userData = userDataProvider.userData;
 
                         if (userData != null) {
-                          print(
+                          debugPrint(
                               'Nombre del usuario: ${userData.firstName} ${userData.lastName}');
                         } else {
-                          print('No se encontraron datos del usuario.');
+                          debugPrint('No se encontraron datos del usuario.');
                         }
                       },
                     ),
@@ -152,9 +144,15 @@ class DashboardScreenState extends State<DashboardScreen>
       setState(() {
         _goBackPressed = true;
       });
-      await Provider.of<AuthProvider>(context, listen: false).logout();
-      await Provider.of<UserAuthDataProvider>(context, listen: false)
-          .clearUserAuthData();
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final userAuthDataProvider =
+          Provider.of<UserAuthDataProvider>(context, listen: false);
+      final userDataProvider =
+          Provider.of<UserDataProvider>(context, listen: false);
+
+      await authProvider.logout();
+      await userAuthDataProvider.clearUserAuthData();
+      await userDataProvider.clearUserData();
     } catch (e) {
       debugPrint('Error when attempting to logout: $e');
     }
