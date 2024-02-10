@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user_auth_data_model.dart';
 
-class UserAuthDataProvider with ChangeNotifier {
+class CurrentUserAuthDataProvider with ChangeNotifier {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
   UserAuthInfo? _userAuthData;
 
-  UserAuthDataProvider() {
+  CurrentUserAuthDataProvider() {
     _loadUserAuthData();
   }
 

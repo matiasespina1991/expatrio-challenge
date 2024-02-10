@@ -1,4 +1,4 @@
-import 'package:expatrio_challenge/models/login_attempt_response.dart';
+import 'package:expatrio_challenge/models/login_attempt_response_model.dart';
 import 'package:expatrio_challenge/screens/dashboard_screen.dart';
 import 'package:expatrio_challenge/services/authentication_service.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
-import '../providers/user_data_provider.dart';
+import '../providers/current_user_data_provider.dart';
 import '../utilities/error_code_to_message.dart';
 import '../utilities/validate_email.dart';
 import '../widgets/buttons.dart';
@@ -55,7 +55,8 @@ class LoginScreenState extends State<LoginScreen>
     _passwordFocusNode.addListener(_onFocusChange);
     _authService = AuthenticationService(
       authProvider: Provider.of<AuthProvider>(context, listen: false),
-      userDataProvider: Provider.of<UserDataProvider>(context, listen: false),
+      userDataProvider:
+          Provider.of<CurrentUserDataProvider>(context, listen: false),
     );
 
     _connectivityProvider =

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'country_picker_modal_content.dart';
 
 class TaxDataModalContent extends StatefulWidget {
-  final VoidCallback onTapConfirm;
+  final VoidCallback onTapUpdate;
 
-  const TaxDataModalContent({super.key, required this.onTapConfirm});
+  const TaxDataModalContent({super.key, required this.onTapUpdate});
 
   @override
   TaxDataModalContentState createState() => TaxDataModalContentState();
@@ -101,7 +101,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                 ExpatrioButton(
                     text: 'Update',
                     onPressed: () {
-                      widget.onTapConfirm();
+                      widget.onTapUpdate();
                     })
               ]),
         ),

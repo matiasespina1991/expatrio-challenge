@@ -295,7 +295,7 @@ class ShowModal {
       isDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return TaxDataModalContent(onTapConfirm: onTapConfirm);
+        return TaxDataModalContent(onTapUpdate: onTapConfirm);
       },
     );
   }

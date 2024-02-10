@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/countries_list.dart';
+import '../../models/country_list_model.dart';
 
 class CountryPickerModal extends StatefulWidget {
   final Function(String) onCountrySelected;
@@ -11,8 +12,10 @@ class CountryPickerModal extends StatefulWidget {
 }
 
 class CountryPickerModalState extends State<CountryPickerModal> {
-  List<String> countries = [...countriesList];
-  List<String> filteredCountries = [];
+  final List<CountryList> countries =
+      countriesList.map((map) => CountryList.fromMap(map)).toList();
+
+  List<CountryList> filteredCountries = [];
   String searchQuery = '';
 
   @override
@@ -26,9 +29,20 @@ class CountryPickerModalState extends State<CountryPickerModal> {
       searchQuery = query;
       filteredCountries = countries
           .where((country) =>
-              country.toLowerCase().contains(searchQuery.toLowerCase()))
+              country.name.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();
     });
+  }
+
+  void handleSelectedCountry(index) {
+    String countrySelected =
+        getCountryBasedOnCountryCode(filteredCountries[index].codeName);
+    widget.onCountrySelected(countrySelected);
+    Navigator.pop(context);
+  }
+
+  String getCountryBasedOnCountryCode(String code) {
+    return countries.firstWhere((country) => country.codeName == code).name;
   }
 
   @override
@@ -59,11 +73,8 @@ class CountryPickerModalState extends State<CountryPickerModal> {
                         title: Text('No coincidences found...'));
                   }
                   return ListTile(
-                    title: Text(filteredCountries[index]),
-                    onTap: () {
-                      widget.onCountrySelected(filteredCountries[index]);
-                      Navigator.pop(context);
-                    },
+                    title: Text(filteredCountries[index].name),
+                    onTap: () => handleSelectedCountry(index),
                   );
                 },
               ),

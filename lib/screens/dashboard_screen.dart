@@ -1,17 +1,15 @@
 import 'dart:developer';
 
 import 'package:expatrio_challenge/models/user_tax_data_model.dart';
-import 'package:expatrio_challenge/providers/user_auth_data_provider.dart';
-import 'package:expatrio_challenge/providers/user_tax_data_provider.dart';
+import 'package:expatrio_challenge/providers/current_user_auth_data_provider.dart';
+import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
-import '../models/user_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
-import '../providers/user_data_provider.dart';
-import '../services/current_user_tax_data_service.dart';
+import '../providers/current_user_data_provider.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 import 'login_screen.dart';
@@ -28,16 +26,17 @@ class DashboardScreenState extends State<DashboardScreen>
   bool _goBackPressed = false;
   late ConnectivityProvider _connectivityProvider;
   final _storage = const FlutterSecureStorage();
-  late UserDataProvider _userDataProvider;
-  late UserTaxDataProvider _userTaxDataProvider;
+  late CurrentUserDataProvider _userDataProvider;
+  late CurrentUserTaxDataProvider _userTaxDataProvider;
   late String? _userName;
 
   @override
   void initState() {
     super.initState();
-    _userDataProvider = Provider.of<UserDataProvider>(context, listen: false);
+    _userDataProvider =
+        Provider.of<CurrentUserDataProvider>(context, listen: false);
     _userTaxDataProvider =
-        Provider.of<UserTaxDataProvider>(context, listen: false);
+        Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
     _userName = getUserName();
     _connectivityProvider =
         Provider.of<ConnectivityProvider>(context, listen: false);
@@ -96,8 +95,8 @@ class DashboardScreenState extends State<DashboardScreen>
                     if (_userName != null)
                       Column(
                         children: [
-                          Container(
-                            height: 200,
+                          SizedBox(
+                            height: 220,
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -120,7 +119,7 @@ class DashboardScreenState extends State<DashboardScreen>
                           ),
                         ],
                       ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 25),
                     const Text(
                       'Uh-Oh!',
                       style: TextStyle(
@@ -201,9 +200,9 @@ class DashboardScreenState extends State<DashboardScreen>
       });
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final userAuthDataProvider =
-          Provider.of<UserAuthDataProvider>(context, listen: false);
+          Provider.of<CurrentUserAuthDataProvider>(context, listen: false);
       final userDataProvider =
-          Provider.of<UserDataProvider>(context, listen: false);
+          Provider.of<CurrentUserDataProvider>(context, listen: false);
 
       await authProvider.logout();
       await userAuthDataProvider.clearUserAuthData();

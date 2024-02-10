@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user_data_model.dart';
 
-class UserDataProvider with ChangeNotifier {
+class CurrentUserDataProvider with ChangeNotifier {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
   UserDataModel? _userData;
 
-  UserDataProvider() {
+  CurrentUserDataProvider() {
     _loadUserData();
   }
 

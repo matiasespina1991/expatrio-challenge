@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:expatrio_challenge/models/login_attempt_response.dart';
+import 'package:expatrio_challenge/models/login_attempt_response_model.dart';
 import 'package:expatrio_challenge/models/user_auth_data_model.dart';
 import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/services/current_user_data_service.dart';
@@ -8,14 +8,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../providers/authentication_provider.dart';
 
-import '../providers/user_data_provider.dart';
+import '../providers/current_user_data_provider.dart';
 import '../widgets/modals.dart';
 
 class AuthenticationService {
   final storage = const FlutterSecureStorage();
   final showModal = ShowModal();
   final AuthProvider authProvider;
-  final UserDataProvider userDataProvider;
+  final CurrentUserDataProvider userDataProvider;
 
   AuthenticationService(
       {required this.authProvider, required this.userDataProvider});
