@@ -35,14 +35,10 @@ class CountryPickerModalState extends State<CountryPickerModal> {
   }
 
   void handleSelectedCountry(index) {
-    String countrySelected =
-        getCountryBasedOnCountryCode(filteredCountries[index].codeName);
+    String countrySelected = filteredCountries[index].codeName;
+
     widget.onCountrySelected(countrySelected);
     Navigator.pop(context);
-  }
-
-  String getCountryBasedOnCountryCode(String code) {
-    return countries.firstWhere((country) => country.codeName == code).name;
   }
 
   @override

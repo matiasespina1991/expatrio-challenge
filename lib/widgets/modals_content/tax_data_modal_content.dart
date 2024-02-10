@@ -1,6 +1,8 @@
+import 'package:expatrio_challenge/data/countries_list.dart';
 import 'package:expatrio_challenge/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
+import '../../utilities/get_country_based_on_country_code.dart';
 import 'country_picker_modal_content.dart';
 
 class TaxDataModalContent extends StatefulWidget {
@@ -71,7 +73,8 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                           children: [
                             selectedCountry == null
                                 ? const Text('Select a country')
-                                : Text(selectedCountry!),
+                                : Text(getCountryBasedOnCountryCode(
+                                    selectedCountry!)),
                             const Icon(Icons.arrow_drop_down),
                           ],
                         ),
