@@ -4,6 +4,7 @@ import 'package:expatrio_challenge/providers/current_user_auth_data_provider.dar
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/screens/dashboard_screen.dart';
+import 'package:expatrio_challenge/screens/dashboard_screen_OLD.dart';
 import 'package:expatrio_challenge/screens/login_screen.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +30,71 @@ class ExpatrioChallengeApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Expatrio Challenge App',
         theme: ExpatrioTheme.themeData,
-        home: Consumer<AuthProvider>(
+        home: Home(),
+      ),
+    );
+  }
+}
+
+class Home extends StatelessWidget {
+  const Home({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CurrentUserDataProvider>(
+      builder: (context, userDataProvider, child) {
+        if (userDataProvider.fetchingUserData) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('Fetching user data...'),
+                  duration: Duration(seconds: 30)),
+            );
+          });
+
+          Future.delayed(const Duration(seconds: 31), () {
+            if (userDataProvider.fetchingUserData) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: ExpatrioTheme.warningColor,
+                  content: Text('Fetching user data is taking too long...'),
+                  duration: Duration(seconds: 40),
+                ),
+              );
+            }
+          });
+        }
+        if (userDataProvider.hasError) {
+          debugPrint('Error when trying to fetch user data...');
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  backgroundColor: ExpatrioTheme.errorColor,
+                  content: Text('Error when trying to fetch user data.'),
+                  duration: Duration(seconds: 10)),
+            );
+          });
+          // userDataProvider.clearError();
+        }
+        if (userDataProvider.userDataFetchedSuccessfully) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            const SnackBar(
+                backgroundColor: ExpatrioTheme.errorColor,
+                content: Text('Error when trying to fetch user data.'),
+                duration: Duration(seconds: 10));
+          });
+        }
+
+        return Consumer<AuthProvider>(
           builder: (context, auth, _) {
             return auth.isAuthenticated
                 ? const DashboardScreen()
                 : const LoginScreen();
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }

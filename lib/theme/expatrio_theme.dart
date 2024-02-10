@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 class ExpatrioTheme {
   static const Color primaryColor = Color(0xFF40AF9E);
   static const Color secondaryColor = Colors.white;
+  static const Color errorColor = Color(0xFFD32F2F);
+  static const Color successColor = Color(0xFF40AF9E);
+  static const Color warningColor = Color(0xFFEFB700);
 
   static ThemeData themeData = ThemeData(
     fontFamily: 'Acumin Pro',

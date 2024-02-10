@@ -8,40 +8,49 @@ import '../models/user_data_model.dart';
 class CurrentUserData {
   final storage = const FlutterSecureStorage();
 
-  Future<UserDataModel?> fetchUserProfile() async {
+  Future<UserDataModel?> fetchUserData() async {
     late String? userId;
 
-    userId = await storage.read(key: 'user_id');
-    if (userId == null) {
-      debugPrint('Error: User ID not found.');
-      return null;
-    }
+    debugPrint('Fetching user data...');
 
-    final accessToken = await storage.read(key: 'auth_token');
-    if (accessToken == null) {
-      debugPrint('Error: Access token not found.');
-      return null;
-    }
+    try {
+      userId = await storage.read(key: 'user_id');
+      if (userId == null) {
+        debugPrint('Error: User ID not found.');
+        return null;
+      }
 
-    String userProfileEndpoint =
-        'https://dev-api.expatrio.com/portal/users/$userId/profile';
+      final accessToken = await storage.read(key: 'auth_token');
+      if (accessToken == null) {
+        debugPrint('Error: Access token not found.');
+        return null;
+      }
 
-    final response = await http.get(
-      Uri.parse(userProfileEndpoint),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json',
-      },
-    );
+      String userProfileEndpoint =
+          'https://dev-api.expatrio.com/portal/users/$userId/profile';
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
+      final response = await http.get(
+        Uri.parse(userProfileEndpoint),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
 
-      return UserDataModel.fromJson(data);
-    } else {
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        debugPrint('User data fetched successfully.');
+        return UserDataModel.fromJson(data);
+      } else {
+        debugPrint(
+            'Failed to fetch user profile. Status: ${response.statusCode}. Reason: ${response.body}');
+        return null;
+      }
+    } catch (e) {
       debugPrint(
-          'Failed to fetch user profile. Status: ${response.statusCode}. Reason: ${response.body}');
-      return null;
+          'ERROR: An exception was thrown when trying to fetch current user data.');
+      debugPrint('The error was thrown at: CurrentUserData.fetchUserData()');
+      debugPrint('Error: $e');
     }
   }
 }

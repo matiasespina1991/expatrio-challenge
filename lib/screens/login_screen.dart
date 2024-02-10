@@ -1,5 +1,5 @@
 import 'package:expatrio_challenge/models/login_attempt_response_model.dart';
-import 'package:expatrio_challenge/screens/dashboard_screen.dart';
+import 'package:expatrio_challenge/screens/dashboard_screen_OLD.dart';
 import 'package:expatrio_challenge/services/authentication_service.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 
@@ -354,7 +354,7 @@ class LoginScreenState extends State<LoginScreen>
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardScreen()),
+            MaterialPageRoute(builder: (context) => const DashboardScreenOLD()),
           );
         },
       );

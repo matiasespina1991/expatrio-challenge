@@ -12,38 +12,46 @@ class CurrentUserTaxData {
 
     debugPrint('Fetching user tax data...');
 
-    userId = await storage.read(key: 'user_id');
-    if (userId == null) {
-      debugPrint('Error: User ID not found.');
-      return null;
-    }
+    try {
+      userId = await storage.read(key: 'user_id');
+      if (userId == null) {
+        debugPrint('Error: User ID not found.');
+        return null;
+      }
 
-    final accessToken = await storage.read(key: 'auth_token');
-    if (accessToken == null) {
-      debugPrint('Access token not found.');
-      return null;
-    }
+      final accessToken = await storage.read(key: 'auth_token');
+      if (accessToken == null) {
+        debugPrint('Access token not found.');
+        return null;
+      }
 
-    String taxDataEndpoint =
-        'https://dev-api.expatrio.com/v3/customers/$userId/tax-data';
+      String taxDataEndpoint =
+          'https://dev-api.expatrio.com/v3/customers/$userId/tax-data';
 
-    final response = await http.get(
-      Uri.parse(taxDataEndpoint),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json',
-      },
-    );
+      final response = await http.get(
+        Uri.parse(taxDataEndpoint),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      debugPrint('Tax data fetched successfully.');
-      final UserTaxDataModel data =
-          UserTaxDataModel.fromJson(jsonDecode(response.body));
-      return data;
-    } else {
+      if (response.statusCode == 200) {
+        debugPrint('User tax data fetched successfully.');
+        final UserTaxDataModel data =
+            UserTaxDataModel.fromJson(jsonDecode(response.body));
+        return data;
+      } else {
+        debugPrint(
+            'Failed to fetch tax data. Status: ${response.statusCode}. Reason: ${response.body}');
+        return null;
+      }
+    } catch (e) {
       debugPrint(
-          'Failed to fetch tax data. Status: ${response.statusCode}. Reason: ${response.body}');
-      return null;
+          'ERROR: An exception was thrown when trying to fetch current user tax data.');
+      debugPrint(
+          'The error was thrown at: CurrentUserTaxData.fetchUserTaxData()');
+      debugPrint('Error: $e');
     }
   }
 }
