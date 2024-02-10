@@ -89,10 +89,6 @@ class PrimaryScreen extends StatelessWidget {
           });
         }
 
-        // return authProvider.isAuthenticated
-        //     ? const DashboardScreen()
-        //     : const LoginScreen();
-
         return Consumer<AuthProvider>(
           builder: (context, auth, _) {
             return auth.isAuthenticated
