@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
+import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import '../providers/conectivity_provider.dart';
 import '../providers/current_user_auth_data_provider.dart';
 import '../providers/current_user_data_provider.dart';
 import '../services/authentication_service.dart';
+import '../theme/expatrio_theme.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
 
@@ -27,7 +29,11 @@ class DashboardScreenState extends State<DashboardScreen>
   late ConnectivityProvider _connectivityProvider;
   final _storage = const FlutterSecureStorage();
   late String? _userFullName;
-  late UserTaxDataModel? _userTaxData;
+  late CurrentUserTaxDataProvider _userTaxDataProvider;
+  late CurrentUserDataProvider _userDataProvider;
+  late CurrentUserTaxDataService _currentUserTaxDataService;
+  UserTaxDataModel? _userTaxData;
+  Future? _loadUserTaxDataFuture;
 
   @override
   void initState() {
@@ -36,37 +42,77 @@ class DashboardScreenState extends State<DashboardScreen>
     setState(() {
       _connectivityProvider =
           Provider.of<ConnectivityProvider>(context, listen: false);
-      _userTaxData =
-          Provider.of<CurrentUserTaxDataProvider>(context, listen: false)
-              .userTaxData;
-      debugPrint('User Tax Data: $_userTaxData');
+      _userDataProvider =
+          Provider.of<CurrentUserDataProvider>(context, listen: false);
+      _userTaxDataProvider =
+          Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
+      _currentUserTaxDataService = CurrentUserTaxDataService();
+      _userTaxData = _userTaxDataProvider.userTaxData;
+      _loadUserTaxDataFuture = _userTaxDataProvider.loadUserTaxData();
     });
+  }
+
+  handleClickUpdateTaxData(
+      {required String selectedCountry, required String taxId}) async {
+    if (_userTaxData != null) {
+      UserTaxDataModel updatedUserTaxData = UserTaxDataModel(
+        usPerson: _userTaxData!.usPerson,
+        usTaxId: _userTaxData!.usTaxId,
+        primaryTaxResidence:
+            TaxResidenceModel(country: selectedCountry, id: taxId),
+        secondaryTaxResidence: _userTaxData!.secondaryTaxResidence,
+        w9FileId: _userTaxData!.w9FileId,
+        w9File: _userTaxData!.w9File,
+      );
+
+      await _userTaxDataProvider.setUserTaxData(updatedUserTaxData);
+
+      setState(() {
+        _userTaxData = updatedUserTaxData;
+      });
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: ExpatrioTheme.successColor,
+        content: Text('User data updated successfully.'),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final userDataProvider = Provider.of<CurrentUserDataProvider>(context);
-    final userTaxDataProvider =
-        Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
-
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) async {
-        setState(() {
-          _goBackPressed = didPop;
-        });
-        await goBack(context);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () async {
-              await goBack(context);
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () async {
+            await goBack(context);
+          },
         ),
-        body: _buildBody(context, userDataProvider, userTaxDataProvider),
+      ),
+      body: FutureBuilder(
+        future: _loadUserTaxDataFuture,
+        builder: (context, snapshot) {
+          debugPrint('Snapshot: $snapshot');
+          debugPrint('hasError: ${snapshot.hasError}');
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            if (snapshot.data != null) {
+              _userTaxData = snapshot.data as UserTaxDataModel?;
+            }
+            debugPrint('_userTaxData: $_userTaxData');
+            return _buildBody(
+                context,
+                Provider.of<CurrentUserDataProvider>(context),
+                _userTaxDataProvider);
+          }
+        },
       ),
     );
   }
@@ -161,7 +207,11 @@ class DashboardScreenState extends State<DashboardScreen>
                     userDataProvider: userDataProvider,
                     userTaxDataProvider: userTaxDataProvider,
                     context: context,
-                    onTapConfirm: () {
+                    onTapUpdate: (selectedCountry, taxId) {
+                      handleClickUpdateTaxData(
+                        selectedCountry: selectedCountry,
+                        taxId: taxId,
+                      );
                       Navigator.maybePop(context);
                     },
                   );

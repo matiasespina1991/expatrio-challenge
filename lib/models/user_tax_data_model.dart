@@ -7,6 +7,10 @@ class TaxResidenceModel {
     required this.id,
   });
 
+  TaxResidenceModel.copy(TaxResidenceModel source)
+      : country = source.country,
+        id = source.id;
+
   factory TaxResidenceModel.fromJson(Map<String, dynamic> json) {
     return TaxResidenceModel(
       country: json['country'],
@@ -50,6 +54,20 @@ class FileModel {
     required this.fileUrl,
     required this.invalid,
   });
+
+  FileModel.copy(FileModel source)
+      : id = source.id,
+        createdAt = source.createdAt,
+        modifiedAt = source.modifiedAt,
+        fileName = source.fileName,
+        dataType = source.dataType,
+        author = source.author,
+        state = source.state,
+        field = source.field,
+        label = source.label,
+        description = source.description,
+        fileUrl = source.fileUrl,
+        invalid = source.invalid;
 
   factory FileModel.fromJson(Map<String, dynamic> json) {
     return FileModel(
@@ -102,6 +120,16 @@ class UserTaxDataModel {
     required this.w9FileId,
     required this.w9File,
   });
+
+  UserTaxDataModel.copy(UserTaxDataModel source)
+      : usPerson = source.usPerson,
+        usTaxId = source.usTaxId,
+        primaryTaxResidence =
+            TaxResidenceModel.copy(source.primaryTaxResidence),
+        secondaryTaxResidence = List.from(source.secondaryTaxResidence
+            .map((residence) => TaxResidenceModel.copy(residence))),
+        w9FileId = source.w9FileId,
+        w9File = FileModel.copy(source.w9File);
 
   factory UserTaxDataModel.fromJson(Map<String, dynamic> json) {
     var secondaryTaxResidenceJson = json['secondaryTaxResidence'] as List;

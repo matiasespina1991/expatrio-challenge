@@ -1,4 +1,5 @@
 import 'package:expatrio_challenge/data/countries_list.dart';
+import 'package:expatrio_challenge/models/update_tax_data_callback_model.dart';
 import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
@@ -6,13 +7,13 @@ import 'package:expatrio_challenge/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_tax_data_model.dart';
+import '../../theme/expatrio_theme.dart';
 import '../../utilities/get_country_based_on_country_code.dart';
 import 'country_picker_modal_content.dart';
 
 class TaxDataModalContent extends StatefulWidget {
-  final VoidCallback onTapUpdate;
+  final UpdateTaxDataCallback onTapUpdate;
   final CurrentUserDataProvider userDataProvider;
-
   final CurrentUserTaxDataProvider userTaxDataProvider;
 
   const TaxDataModalContent(
@@ -30,6 +31,9 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
   late UserDataModel? userData;
   late UserTaxDataModel? userTaxData;
   late TextEditingController taxIdController;
+  bool userConfirmsTaxResidencyisTrueAndAccurate = false;
+  bool userClickedUpdate = false;
+  bool taxIdFieldHasError = false;
 
   @override
   void initState() {
@@ -63,9 +67,22 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
     }
   }
 
+  void handleClickUpdate() {
+    setState(() {
+      userClickedUpdate = true;
+    });
+    if (selectedCountry != null &&
+        taxIdController.text.isNotEmpty &&
+        userConfirmsTaxResidencyisTrueAndAccurate) {
+      widget.onTapUpdate(
+        selectedCountry!,
+        taxIdController.text,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    debugPrint('selectedCountry: $selectedCountry');
     return Padding(
       padding: const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 20),
       child: SizedBox(
@@ -80,14 +97,14 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                 const Text('Declaration of financial information',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 30),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        'Which country serves as your primary tax residence?*'
-                            .toUpperCase(),
-                        style: const TextStyle(fontSize: 13)),
+                      'Which country serves as your primary tax residence?*'
+                          .toUpperCase(),
+                      style: const TextStyle(fontSize: 13),
+                    ),
                     const SizedBox(height: 6),
                     InkWell(
                       onTap: _showCountryPicker,
@@ -95,48 +112,126 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 12),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black54),
+                          border: Border.all(
+                            color: selectedCountry == null && userClickedUpdate
+                                ? Colors.red
+                                : Colors
+                                    .black54, // Cambia el color del borde si no se ha seleccionado un país y el usuario intentó actualizar
+                            width: 1.0,
+                          ),
                           borderRadius: BorderRadius.circular(7),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            selectedCountry == null
-                                ? const Text('Select a country')
-                                : Text(getCountryBasedOnCountryCode(
-                                    selectedCountry!)),
-                            const Icon(Icons.arrow_drop_down),
+                            Text(
+                              selectedCountry == null
+                                  ? 'Select a country'
+                                  : getCountryBasedOnCountryCode(
+                                      selectedCountry!),
+                              style: TextStyle(
+                                  color: selectedCountry == null &&
+                                          userClickedUpdate
+                                      ? Colors.red
+                                      : Colors
+                                          .black), // Cambia el color del texto si es necesario
+                            ),
+                            const Icon(Icons.arrow_drop_down,
+                                color: Colors.black),
                           ],
                         ),
                       ),
                     ),
+                    if (selectedCountry == null &&
+                        userClickedUpdate) // Solo muestra el mensaje de error si es necesario
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          'Please choose a country.',
+                          style: TextStyle(fontSize: 12, color: Colors.red),
+                        ),
+                      ),
                     const SizedBox(height: 22),
-                    Text('Tax identification number*'.toUpperCase(),
-                        style: const TextStyle(fontSize: 13)),
-                    const SizedBox(height: 6),
                     TextField(
                       controller: taxIdController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(7),
-                          ),
+                      onChanged: (value) {
+                        bool isNumeric = RegExp(r'^[0-9]*$').hasMatch(value);
+                        if (!isNumeric || value.isEmpty) {
+                          setState(() {
+                            taxIdFieldHasError = true;
+                          });
+                        } else {
+                          setState(() {
+                            taxIdFieldHasError = false;
+                          });
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText:
+                            'Tax Identification Number', // Opcional: agrega un labelText para claridad
+                        errorText: taxIdFieldHasError
+                            ? 'Please enter a valid tax identification number.'
+                            : null,
+                        border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
                         ),
-                        hintStyle: TextStyle(fontSize: 14),
-                        hintText: 'Enter your tax identification number',
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.black54, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 2.0),
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
+                        ),
+                        focusedErrorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2.0),
+                          borderRadius: BorderRadius.all(Radius.circular(7)),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 15),
+                        hintStyle: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Checkbox(
+                          isError: userClickedUpdate &&
+                              !userConfirmsTaxResidencyisTrueAndAccurate,
+                          value: userConfirmsTaxResidencyisTrueAndAccurate,
+                          onChanged: (value) {
+                            setState(() {
+                              userConfirmsTaxResidencyisTrueAndAccurate =
+                                  value!;
+                            });
+                          }),
+                      const Flexible(
+                        child: Text(
+                          'I confirm above tax residency and US self-declaration is true and accurate.',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 ExpatrioButton(
                     text: 'Update',
                     onPressed: () {
-                      widget.onTapUpdate();
-                    })
+                      handleClickUpdate();
+                    }),
               ]),
         ),
       ),

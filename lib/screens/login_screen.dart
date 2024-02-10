@@ -367,11 +367,6 @@ class LoginScreenState extends State<LoginScreen>
             );
             return;
           }
-
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const DashboardScreen()),
-          // );
         },
       );
     } else {

@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/models/update_tax_data_callback_model.dart';
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/widgets/modals_content/tax_data_modal_content.dart';
 import 'package:flutter/material.dart';
@@ -289,7 +290,7 @@ class ShowModal {
 
   void updateTaxData({
     required BuildContext context,
-    required VoidCallback onTapConfirm,
+    required UpdateTaxDataCallback onTapUpdate,
     required CurrentUserDataProvider userDataProvider,
     required CurrentUserTaxDataProvider userTaxDataProvider,
   }) {
@@ -300,7 +301,7 @@ class ShowModal {
       context: context,
       builder: (BuildContext context) {
         return TaxDataModalContent(
-          onTapUpdate: onTapConfirm,
+          onTapUpdate: onTapUpdate,
           userDataProvider: userDataProvider,
           userTaxDataProvider: userTaxDataProvider,
         );

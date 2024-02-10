@@ -8,18 +8,16 @@ class CurrentUserTaxDataProvider with ChangeNotifier {
   UserTaxDataModel? _userTaxData;
 
   CurrentUserTaxDataProvider() {
-    _loadUserTaxData();
+    loadUserTaxData();
   }
 
   UserTaxDataModel? get userTaxData => _userTaxData;
 
-  Future<void> _loadUserTaxData() async {
+  Future<void> loadUserTaxData() async {
     final UserTaxDataModel? userTaxData =
-        await CurrentUserTaxData().fetchUserTaxData();
-    if (userTaxData != null) {
-      _userTaxData = userTaxData;
-      notifyListeners();
-    }
+        await CurrentUserTaxDataService().fetchUserTaxData();
+    _userTaxData = userTaxData;
+    notifyListeners();
   }
 
   Future<void> setUserTaxData(UserTaxDataModel userTaxData) async {

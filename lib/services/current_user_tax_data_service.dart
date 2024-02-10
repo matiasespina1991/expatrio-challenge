@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-class CurrentUserTaxData {
+class CurrentUserTaxDataService {
   final storage = const FlutterSecureStorage();
 
   Future<UserTaxDataModel?> fetchUserTaxData() async {
@@ -55,5 +55,48 @@ class CurrentUserTaxData {
       debugPrint('Error: $e');
     }
     return null;
+  }
+
+  Future<bool> setUserTaxData(UserTaxDataModel userTaxData) async {
+    try {
+      String? userId = await storage.read(key: 'user_id');
+      if (userId == null) {
+        debugPrint('Error: User ID not found.');
+        return false;
+      }
+
+      final accessToken = await storage.read(key: 'auth_token');
+      if (accessToken == null) {
+        debugPrint('Access token not found.');
+        return false;
+      }
+
+      String taxDataEndpoint =
+          'https://dev-api.expatrio.com/v3/customers/$userId/tax-data';
+
+      Map<String, dynamic> userTaxDataJson = userTaxData.toJson();
+
+      final response = await http.put(
+        Uri.parse(taxDataEndpoint),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(userTaxDataJson),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint('User tax data updated successfully.');
+        return true;
+      } else {
+        debugPrint(
+            'Failed to update tax data. Status: ${response.statusCode}. Reason: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      debugPrint(
+          'ERROR: An exception was thrown when trying to update user tax data.');
+      return false;
+    }
   }
 }
