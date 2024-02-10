@@ -24,7 +24,6 @@ class CurrentUserTaxDataProvider with ChangeNotifier {
 
   Future<void> setUserTaxData(UserTaxDataModel userTaxData) async {
     _userTaxData = userTaxData;
-    // Save the user tax data back to the API?
     notifyListeners();
   }
 

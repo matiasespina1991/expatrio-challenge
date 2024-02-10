@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/widgets/modals_content/tax_data_modal_content.dart';
 import 'package:flutter/material.dart';
 
@@ -288,6 +289,7 @@ class ShowModal {
   void updateTaxData({
     required BuildContext context,
     required VoidCallback onTapConfirm,
+    required CurrentUserDataProvider userDataProvider,
   }) {
     showModalBottomSheet(
       enableDrag: false,
@@ -295,7 +297,8 @@ class ShowModal {
       isDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return TaxDataModalContent(onTapUpdate: onTapConfirm);
+        return TaxDataModalContent(
+            onTapUpdate: onTapConfirm, userDataProvider: userDataProvider);
       },
     );
   }

@@ -1,4 +1,6 @@
 import 'package:expatrio_challenge/data/countries_list.dart';
+import 'package:expatrio_challenge/models/user_data_model.dart';
+import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +9,10 @@ import 'country_picker_modal_content.dart';
 
 class TaxDataModalContent extends StatefulWidget {
   final VoidCallback onTapUpdate;
+  final CurrentUserDataProvider userDataProvider;
 
-  const TaxDataModalContent({super.key, required this.onTapUpdate});
+  const TaxDataModalContent(
+      {super.key, required this.onTapUpdate, required this.userDataProvider});
 
   @override
   TaxDataModalContentState createState() => TaxDataModalContentState();
@@ -16,6 +20,13 @@ class TaxDataModalContent extends StatefulWidget {
 
 class TaxDataModalContentState extends State<TaxDataModalContent> {
   String? selectedCountry;
+  late UserDataModel? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    userData = widget.userDataProvider.userData;
+  }
 
   void _showCountryPicker() async {
     String? result;

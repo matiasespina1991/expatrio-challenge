@@ -1,7 +1,11 @@
+import 'dart:developer';
+
+import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
+import '../models/user_tax_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
 import '../providers/current_user_auth_data_provider.dart';
@@ -23,12 +27,19 @@ class DashboardScreenState extends State<DashboardScreen>
   late ConnectivityProvider _connectivityProvider;
   final _storage = const FlutterSecureStorage();
   late String? _userFullName;
+  late UserTaxDataModel? _userTaxData;
 
   @override
   void initState() {
     super.initState();
-    _connectivityProvider =
-        Provider.of<ConnectivityProvider>(context, listen: false);
+
+    setState(() {
+      _connectivityProvider =
+          Provider.of<ConnectivityProvider>(context, listen: false);
+      _userTaxData =
+          Provider.of<CurrentUserTaxDataProvider>(context, listen: false)
+              .userTaxData;
+    });
   }
 
   @override
@@ -142,6 +153,7 @@ class DashboardScreenState extends State<DashboardScreen>
                 onPressed: () {
                   final showModal = ShowModal();
                   showModal.updateTaxData(
+                    userDataProvider: userDataProvider,
                     context: context,
                     onTapConfirm: () {
                       Navigator.maybePop(context);
@@ -163,14 +175,13 @@ class DashboardScreenState extends State<DashboardScreen>
                   //   debugPrint('User data not found.');
                   // }
 
-                  // UserTaxDataModel? userTaxData =
-                  //     _userTaxDataProvider.userTaxData;
-                  //
-                  // if (userTaxData != null) {
-                  //   log('User Tax Data: ${userTaxData.toJson()}');
-                  // } else {
-                  //   debugPrint('User tax data not found.');
-                  // }
+                  UserTaxDataModel? userTaxData = _userTaxData;
+
+                  if (userTaxData != null) {
+                    log('User Tax Data: ${userTaxData.toJson()}');
+                  } else {
+                    debugPrint('User tax data not found.');
+                  }
                 },
               ),
             ],

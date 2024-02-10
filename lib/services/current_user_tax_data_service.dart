@@ -40,6 +40,7 @@ class CurrentUserTaxData {
         debugPrint('User tax data fetched successfully.');
         final UserTaxDataModel data =
             UserTaxDataModel.fromJson(jsonDecode(response.body));
+
         return data;
       } else {
         debugPrint(

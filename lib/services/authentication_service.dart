@@ -15,7 +15,7 @@ class AuthenticationService {
   final storage = const FlutterSecureStorage();
   final showModal = ShowModal();
   final AuthProvider authProvider;
-  final CurrentUserDataProvider userDataProvider;
+  final CurrentUserDataProvider? userDataProvider;
 
   AuthenticationService(
       {required this.authProvider, required this.userDataProvider});
@@ -55,7 +55,7 @@ class AuthenticationService {
         if (currentUserData != null) {
           debugPrint('User data fetched successfully.');
 
-          userDataProvider.setUserData(currentUserData);
+          userDataProvider?.setUserData(currentUserData);
         } else {
           debugPrint('ERROR: User data not found.');
         }

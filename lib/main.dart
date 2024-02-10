@@ -67,7 +67,7 @@ class PrimaryScreen extends StatelessWidget {
           });
         }
         if (userDataProvider.hasError && authProvider.isAuthenticated) {
-          debugPrint('Error when trying to fetch user data...');
+          debugPrint('Error when trying to fetch user data.');
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(

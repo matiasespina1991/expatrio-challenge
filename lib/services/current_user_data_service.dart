@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'package:expatrio_challenge/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 
 import '../models/user_data_model.dart';
+import 'authentication_service.dart';
 
 class CurrentUserData {
   final storage = const FlutterSecureStorage();
@@ -29,7 +32,7 @@ class CurrentUserData {
       String userProfileEndpoint =
           'https://dev-api.expatrio.com/portal/users/$userId/profile';
 
-      final response = await http.get(
+      final Response response = await http.get(
         Uri.parse(userProfileEndpoint),
         headers: {
           'Authorization': 'Bearer $accessToken',
@@ -38,12 +41,23 @@ class CurrentUserData {
       );
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final Map<String, dynamic> data = jsonDecode(response.body);
         debugPrint('User data fetched successfully.');
         return UserDataModel.fromJson(data);
       } else {
         debugPrint(
             'Failed to fetch user profile. Status: ${response.statusCode}. Reason: ${response.body}');
+        if (response.statusCode == 401) {
+          debugPrint(
+              'Error: Unauthorized. The access token is invalid. User will be logged out.');
+          final AuthProvider authProvider = AuthProvider();
+          final AuthenticationService authService = AuthenticationService(
+              authProvider: authProvider, userDataProvider: null);
+          await authService.logout();
+          await authProvider.clearAuthToken();
+
+          return null;
+        }
         return null;
       }
     } catch (e) {
