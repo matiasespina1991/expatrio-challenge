@@ -95,6 +95,7 @@ class AuthenticationService {
   }
 
   Future<bool> authenticate(context) async {
+    debugPrint('Authenticating user...');
     try {
       final accessToken = await storage.read(key: 'auth_token').catchError((e) {
         debugPrint('Error reading token: $e');
@@ -103,6 +104,7 @@ class AuthenticationService {
 
       if (accessToken != null) {
         await authProvider.setAuthToken(accessToken);
+        debugPrint('User authenticated.');
       }
 
       return accessToken != null;
@@ -116,6 +118,7 @@ class AuthenticationService {
   Future<bool> logout({context}) async {
     try {
       await storage.delete(key: 'auth_token');
+      await storage.delete(key: 'user_id');
       return true;
     } catch (e) {
       debugPrint('Logout error: $e');

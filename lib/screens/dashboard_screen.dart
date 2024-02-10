@@ -1,17 +1,14 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
-import '../models/user_tax_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
 import '../providers/current_user_auth_data_provider.dart';
 import '../providers/current_user_data_provider.dart';
-import '../providers/current_user_tax_data_provider.dart';
+import '../services/authentication_service.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
-import 'login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -36,7 +33,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    final _userDataProvider = Provider.of<CurrentUserDataProvider>(context);
+    final userDataProvider = Provider.of<CurrentUserDataProvider>(context);
 
     return PopScope(
       canPop: true,
@@ -55,14 +52,13 @@ class DashboardScreenState extends State<DashboardScreen>
             },
           ),
         ),
-        body: _buildBody(context, _userDataProvider),
+        body: _buildBody(context, userDataProvider),
       ),
     );
   }
 
   Widget _buildBody(
       BuildContext context, CurrentUserDataProvider userDataProvider) {
-    print('Dashboard Screen: Building body...');
     if (userDataProvider.fetchingUserData) {
       return const Center(child: CircularProgressIndicator());
     } else if (userDataProvider.hasError) {
@@ -185,7 +181,7 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   String? getUserName(userDataProvider) {
-    String? userFullName = null;
+    String? userFullName;
     final userFirstName = userDataProvider.userData?.firstName;
     final userLastName = userDataProvider.userData?.lastName;
     if (userFirstName == null || userLastName == null) {
@@ -200,13 +196,18 @@ class DashboardScreenState extends State<DashboardScreen>
       setState(() {
         _goBackPressed = true;
       });
+
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final userAuthDataProvider =
           Provider.of<CurrentUserAuthDataProvider>(context, listen: false);
       final userDataProvider =
           Provider.of<CurrentUserDataProvider>(context, listen: false);
+      final authenticationService = AuthenticationService(
+          authProvider: authProvider, userDataProvider: userDataProvider);
 
       await authProvider.logout();
+      await authenticationService.logout();
+
       await userAuthDataProvider.clearUserAuthData();
       await userDataProvider.clearUserData();
     } catch (e) {

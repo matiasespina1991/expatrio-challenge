@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -13,6 +11,7 @@ class CurrentUserDataProvider with ChangeNotifier {
   bool userDataFetchedSuccessfully = false;
 
   CurrentUserDataProvider() {
+    debugPrint('User data provider initialized.');
     loadUserData();
   }
 
@@ -22,12 +21,24 @@ class CurrentUserDataProvider with ChangeNotifier {
     hasError = false;
     fetchingUserData = true;
     notifyListeners();
+
+    String? userId = await storage.read(key: 'user_id');
+    String? accessToken = await storage.read(key: 'auth_token');
+    if (userId == null && accessToken == null) {
+      fetchingUserData = false;
+      notifyListeners();
+      debugPrint(
+          'User ID and Auth Token not found. Aborting fetching user data. User is probably yet not authenticated.');
+      return;
+    }
+
     final UserDataModel? userData = await CurrentUserData().fetchUserData();
 
     if (userData != null) {
       _userData = userData;
       fetchingUserData = false;
       userDataFetchedSuccessfully = true;
+      hasError = false;
       notifyListeners();
     } else {
       hasError = true;

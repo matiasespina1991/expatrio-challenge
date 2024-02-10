@@ -53,5 +53,6 @@ class CurrentUserTaxData {
           'The error was thrown at: CurrentUserTaxData.fetchUserTaxData()');
       debugPrint('Error: $e');
     }
+    return null;
   }
 }

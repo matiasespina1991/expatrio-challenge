@@ -4,7 +4,6 @@ import 'package:expatrio_challenge/providers/current_user_auth_data_provider.dar
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/screens/dashboard_screen.dart';
-import 'package:expatrio_challenge/screens/dashboard_screen_OLD.dart';
 import 'package:expatrio_challenge/screens/login_screen.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
@@ -30,20 +29,22 @@ class ExpatrioChallengeApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Expatrio Challenge App',
         theme: ExpatrioTheme.themeData,
-        home: Home(),
+        home: const PrimaryScreen(),
       ),
     );
   }
 }
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class PrimaryScreen extends StatelessWidget {
+  const PrimaryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Consumer<CurrentUserDataProvider>(
       builder: (context, userDataProvider, child) {
-        if (userDataProvider.fetchingUserData) {
+        if (userDataProvider.fetchingUserData && authProvider.isAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -53,7 +54,8 @@ class Home extends StatelessWidget {
           });
 
           Future.delayed(const Duration(seconds: 31), () {
-            if (userDataProvider.fetchingUserData) {
+            if (userDataProvider.fetchingUserData &&
+                authProvider.isAuthenticated) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   backgroundColor: ExpatrioTheme.warningColor,
@@ -64,7 +66,7 @@ class Home extends StatelessWidget {
             }
           });
         }
-        if (userDataProvider.hasError) {
+        if (userDataProvider.hasError && authProvider.isAuthenticated) {
           debugPrint('Error when trying to fetch user data...');
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).clearSnackBars();
@@ -75,9 +77,9 @@ class Home extends StatelessWidget {
                   duration: Duration(seconds: 10)),
             );
           });
-          // userDataProvider.clearError();
         }
-        if (userDataProvider.userDataFetchedSuccessfully) {
+        if (userDataProvider.userDataFetchedSuccessfully &&
+            authProvider.isAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).clearSnackBars();
             const SnackBar(
@@ -86,6 +88,10 @@ class Home extends StatelessWidget {
                 duration: Duration(seconds: 10));
           });
         }
+
+        // return authProvider.isAuthenticated
+        //     ? const DashboardScreen()
+        //     : const LoginScreen();
 
         return Consumer<AuthProvider>(
           builder: (context, auth, _) {

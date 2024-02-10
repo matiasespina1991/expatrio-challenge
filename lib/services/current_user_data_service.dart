@@ -52,5 +52,6 @@ class CurrentUserData {
       debugPrint('The error was thrown at: CurrentUserData.fetchUserData()');
       debugPrint('Error: $e');
     }
+    return null;
   }
 }

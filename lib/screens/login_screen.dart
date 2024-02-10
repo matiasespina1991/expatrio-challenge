@@ -1,5 +1,5 @@
 import 'package:expatrio_challenge/models/login_attempt_response_model.dart';
-import 'package:expatrio_challenge/screens/dashboard_screen_OLD.dart';
+
 import 'package:expatrio_challenge/services/authentication_service.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 
@@ -16,6 +16,7 @@ import '../utilities/error_code_to_message.dart';
 import '../utilities/validate_email.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
+import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   /// If the user tries to access a screen without being authenticated,
@@ -312,14 +313,27 @@ class LoginScreenState extends State<LoginScreen>
     setState(() {
       _attemptingLogin = true;
     });
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        duration: Duration(minutes: 2),
+        duration: Duration(seconds: 25),
         content: Text(
           'Trying to login...',
         ),
       ),
     );
+
+    Future.delayed(const Duration(seconds: 26), () {
+      if (_attemptingLogin) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: ExpatrioTheme.warningColor,
+            content: Text('Fetching user data is taking too long...'),
+            duration: Duration(seconds: 40),
+          ),
+        );
+      }
+    });
 
     LoginAttemptResponseModel loginAttempt = await _authService.login(
       context: context,
@@ -335,12 +349,12 @@ class LoginScreenState extends State<LoginScreen>
         onTapConfirm: () async {
           Navigator.of(context).pop();
 
-          var authenticationSuccessful =
+          bool authenticationSuccessful =
               await _authService.authenticate(context);
 
-          debugPrint('ERROR: Authentication failed despite successful login.');
-
           if (!authenticationSuccessful) {
+            debugPrint(
+                'ERROR: Authentication failed despite successful login.');
             showModal.failedLogin(
               errorMessage:
                   'There was an error when trying to authenticate your credentials. Please try again later or contact the administrators.',
@@ -352,10 +366,10 @@ class LoginScreenState extends State<LoginScreen>
             return;
           }
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DashboardScreenOLD()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const DashboardScreen()),
+          // );
         },
       );
     } else {
