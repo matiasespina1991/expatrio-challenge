@@ -2,6 +2,7 @@ import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/widgets/modals_content/tax_data_modal_content.dart';
 import 'package:flutter/material.dart';
 
+import '../providers/current_user_tax_data_provider.dart';
 import '../theme/expatrio_theme.dart';
 import 'buttons.dart';
 import 'modals_content/country_picker_modal_content.dart';
@@ -290,6 +291,7 @@ class ShowModal {
     required BuildContext context,
     required VoidCallback onTapConfirm,
     required CurrentUserDataProvider userDataProvider,
+    required CurrentUserTaxDataProvider userTaxDataProvider,
   }) {
     showModalBottomSheet(
       enableDrag: false,
@@ -298,7 +300,10 @@ class ShowModal {
       context: context,
       builder: (BuildContext context) {
         return TaxDataModalContent(
-            onTapUpdate: onTapConfirm, userDataProvider: userDataProvider);
+          onTapUpdate: onTapConfirm,
+          userDataProvider: userDataProvider,
+          userTaxDataProvider: userTaxDataProvider,
+        );
       },
     );
   }

@@ -52,18 +52,20 @@ class LoginScreenState extends State<LoginScreen>
   void initState() {
     super.initState();
 
-    _emailFocusNode.addListener(_onFocusChange);
-    _passwordFocusNode.addListener(_onFocusChange);
-    _authService = AuthenticationService(
-      authProvider: Provider.of<AuthProvider>(context, listen: false),
-      userDataProvider:
-          Provider.of<CurrentUserDataProvider>(context, listen: false),
-    );
+    setState(() {
+      _emailFocusNode.addListener(_onFocusChange);
+      _passwordFocusNode.addListener(_onFocusChange);
+      _authService = AuthenticationService(
+        authProvider: Provider.of<AuthProvider>(context, listen: false),
+        userDataProvider:
+            Provider.of<CurrentUserDataProvider>(context, listen: false),
+      );
 
-    _connectivityProvider =
-        Provider.of<ConnectivityProvider>(context, listen: false);
-    _connectivityProvider.addListener(() {
-      showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+      _connectivityProvider =
+          Provider.of<ConnectivityProvider>(context, listen: false);
+      _connectivityProvider.addListener(() {
+        showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+      });
     });
 
     if (widget.userTriedUnauthorizedAccess != null) {

@@ -39,12 +39,15 @@ class DashboardScreenState extends State<DashboardScreen>
       _userTaxData =
           Provider.of<CurrentUserTaxDataProvider>(context, listen: false)
               .userTaxData;
+      debugPrint('User Tax Data: $_userTaxData');
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final userDataProvider = Provider.of<CurrentUserDataProvider>(context);
+    final userTaxDataProvider =
+        Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
 
     return PopScope(
       canPop: true,
@@ -63,13 +66,15 @@ class DashboardScreenState extends State<DashboardScreen>
             },
           ),
         ),
-        body: _buildBody(context, userDataProvider),
+        body: _buildBody(context, userDataProvider, userTaxDataProvider),
       ),
     );
   }
 
   Widget _buildBody(
-      BuildContext context, CurrentUserDataProvider userDataProvider) {
+      BuildContext context,
+      CurrentUserDataProvider userDataProvider,
+      CurrentUserTaxDataProvider userTaxDataProvider) {
     if (userDataProvider.fetchingUserData) {
       return const Center(child: CircularProgressIndicator());
     } else if (userDataProvider.hasError) {
@@ -154,6 +159,7 @@ class DashboardScreenState extends State<DashboardScreen>
                   final showModal = ShowModal();
                   showModal.updateTaxData(
                     userDataProvider: userDataProvider,
+                    userTaxDataProvider: userTaxDataProvider,
                     context: context,
                     onTapConfirm: () {
                       Navigator.maybePop(context);
