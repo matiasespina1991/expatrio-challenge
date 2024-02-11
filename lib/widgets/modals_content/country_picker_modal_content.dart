@@ -1,8 +1,8 @@
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/countries_list.dart';
 import '../../models/country_list_model.dart';
+import '../../shared/countries_list.dart';
 
 class CountryPickerModal extends StatefulWidget {
   final Function(String) onCountrySelected;

@@ -11,9 +11,8 @@ import 'authentication_service.dart';
 
 class CurrentUserDataService {
   final storage = const FlutterSecureStorage();
-  final AuthProvider authProvider;
-
-  CurrentUserDataService(this.authProvider);
+  final AuthProvider authProvider = globalAuthProvider;
+  CurrentUserDataService();
 
   Future<UserDataModel?> fetchUserData() async {
     late String? userId;

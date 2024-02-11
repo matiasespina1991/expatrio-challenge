@@ -1,6 +1,5 @@
 import 'package:expatrio_challenge/providers/authentication_provider.dart';
 import 'package:expatrio_challenge/providers/conectivity_provider.dart';
-import 'package:expatrio_challenge/providers/current_user_auth_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/screens/dashboard_screen.dart';
@@ -11,7 +10,7 @@ import 'package:provider/provider.dart';
 
 final AuthProvider globalAuthProvider = AuthProvider();
 final CurrentUserDataProvider globalUserDataProvider =
-    CurrentUserDataProvider(authProvider: globalAuthProvider);
+    CurrentUserDataProvider();
 
 final CurrentUserTaxDataProvider globalUserTaxDataProvider =
     CurrentUserTaxDataProvider();
@@ -30,9 +29,7 @@ class ExpatrioChallengeApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => globalAuthProvider),
-        ChangeNotifierProvider(
-            create: (_) =>
-                CurrentUserDataProvider(authProvider: globalAuthProvider)),
+        ChangeNotifierProvider(create: (_) => globalUserDataProvider),
         ChangeNotifierProvider(create: (_) => globalUserDataProvider),
         ChangeNotifierProvider(create: (_) => globalConnectivityProvider),
         ChangeNotifierProvider(create: (_) => globalUserTaxDataProvider),

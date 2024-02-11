@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 
 import '../../models/user_tax_data_model.dart';
 import '../../theme/expatrio_theme.dart';
-import '../../utilities/get_country_based_on_country_code.dart';
 import 'country_picker_modal_content.dart';
 
 class TaxDataModalContent extends StatefulWidget {
@@ -152,18 +151,12 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
 
   void handleTapRemoveTaxResidency(int index) {
     setState(() {
-      // userTaxData?.secondaryTaxResidence.removeAt(index);
       userTaxData?.secondaryTaxResidence.removeWhere((taxResidence) =>
           taxResidence.country == secondaryTaxResidenceSelectedCountry[index]);
       secondaryTaxIdControllers.removeAt(index);
       secondaryTaxResidenceSelectedCountry.remove(index);
       reindexSecondaryTaxResidenceSelectedCountry();
     });
-    debugPrint(
-        'userTaxData.secondaryTaxResidence: ${userTaxData?.secondaryTaxResidence}');
-    debugPrint('secondaryTaxIdControllers: $secondaryTaxIdControllers');
-    debugPrint(
-        'secondaryTaxResidenceSelectedCountry: $secondaryTaxResidenceSelectedCountry');
   }
 
   @override

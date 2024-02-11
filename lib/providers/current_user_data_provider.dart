@@ -2,7 +2,6 @@ import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/user_data_model.dart';
-import 'authentication_provider.dart';
 
 class CurrentUserDataProvider with ChangeNotifier {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
@@ -10,9 +9,8 @@ class CurrentUserDataProvider with ChangeNotifier {
   bool hasError = false;
   bool fetchingUserData = false;
   bool userDataFetchedSuccessfully = false;
-  final AuthProvider authProvider;
 
-  CurrentUserDataProvider({required this.authProvider}) {
+  CurrentUserDataProvider() {
     debugPrint('User data provider initialized.');
     loadUserData();
   }
@@ -35,7 +33,7 @@ class CurrentUserDataProvider with ChangeNotifier {
       }
 
       final UserDataModel? userData =
-          await CurrentUserDataService(authProvider).fetchUserData();
+          await CurrentUserDataService().fetchUserData();
 
       if (userData != null) {
         _userData = userData;

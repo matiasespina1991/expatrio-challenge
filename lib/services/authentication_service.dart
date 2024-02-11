@@ -52,7 +52,7 @@ class AuthenticationService {
         debugPrint('Proceeding to load user data.');
 
         UserDataModel? currentUserData =
-            await CurrentUserDataService(authProvider).fetchUserData();
+            await CurrentUserDataService().fetchUserData();
 
         if (currentUserData != null) {
           debugPrint('User data fetched successfully.');

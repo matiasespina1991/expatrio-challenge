@@ -1,13 +1,12 @@
+import 'package:expatrio_challenge/main.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
-import 'package:expatrio_challenge/utilities/get_country_based_on_country_code.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
 import '../models/user_tax_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
-import '../providers/current_user_auth_data_provider.dart';
 import '../providers/current_user_data_provider.dart';
 import '../services/authentication_service.dart';
 import '../theme/expatrio_theme.dart';
@@ -30,20 +29,6 @@ class DashboardScreenState extends State<DashboardScreen>
   late CurrentUserDataProvider _userDataProvider;
   final CurrentUserTaxDataService _currentUserTaxDataService =
       CurrentUserTaxDataService();
-
-  void _reloadData() {
-    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-    debugPrint(
-        'Auth status while reloading data: ${_authProvider.isAuthenticated}');
-    if (_authProvider.isAuthenticated) {
-      _userDataProvider.loadUserData();
-      _userTaxDataProvider.loadUserTaxData();
-    } else {
-      debugPrint('User is not authenticated.');
-      goBack(context);
-    }
-  }
 
   @override
   void initState() {
@@ -76,6 +61,17 @@ class DashboardScreenState extends State<DashboardScreen>
   void dispose() {
     _connectivityProvider.removeListener(() {});
     super.dispose();
+  }
+
+  void _reloadData() {
+    final _authProvider = globalAuthProvider;
+
+    if (_authProvider.isAuthenticated) {
+      _userDataProvider.loadUserData();
+      _userTaxDataProvider.loadUserTaxData();
+    } else {
+      goBack(context);
+    }
   }
 
   handleClickUpdateTaxData(
@@ -178,8 +174,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
           return Consumer<CurrentUserTaxDataProvider>(
             builder: (context, taxDataProvider, child) {
-              debugPrint('Loading data: $loadingData');
-              debugPrint('User tax data: ${taxDataProvider.userTaxData}');
               if (taxDataProvider.userTaxData == null || loadingData) {
                 return const Center(
                   child: CircularProgressIndicator(
@@ -369,8 +363,7 @@ class DashboardScreenState extends State<DashboardScreen>
   Future<void> goBack(BuildContext context) async {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final userAuthDataProvider =
-          Provider.of<CurrentUserAuthDataProvider>(context, listen: false);
+
       final userDataProvider =
           Provider.of<CurrentUserDataProvider>(context, listen: false);
       final authenticationService = AuthenticationService(
@@ -379,7 +372,6 @@ class DashboardScreenState extends State<DashboardScreen>
       await authProvider.logout();
       await authenticationService.logout();
 
-      await userAuthDataProvider.clearUserAuthData();
       await userDataProvider.clearUserData();
     } catch (e) {
       debugPrint('Error when attempting to logout: $e');

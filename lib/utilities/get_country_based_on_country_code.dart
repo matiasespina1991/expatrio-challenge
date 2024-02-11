@@ -1,6 +1,6 @@
 import 'package:expatrio_challenge/models/country_list_model.dart';
 
-import '../data/countries_list.dart';
+import '../shared/countries_list.dart';
 
 String getCountryBasedOnCountryCode(String code) {
   List<CountryList> countries =
