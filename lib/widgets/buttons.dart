@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
 
 class ExpatrioButton extends StatelessWidget {
@@ -47,6 +48,7 @@ class ExpatrioTextButton extends StatelessWidget {
   final double fontSize;
   final bool isDisabled;
   final bool fullWidth;
+  final Color color;
 
   const ExpatrioTextButton({
     super.key,
@@ -56,6 +58,7 @@ class ExpatrioTextButton extends StatelessWidget {
     this.isPrimary = true,
     this.isDisabled = false,
     this.fullWidth = false,
+    this.color = ExpatrioTheme.primaryColor,
   });
 
   @override
@@ -63,15 +66,15 @@ class ExpatrioTextButton extends StatelessWidget {
     return TextButton(
       onPressed: isDisabled ? () {} : onPressed,
       style: TextButton.styleFrom(
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         minimumSize:
-            fullWidth ? const Size(double.infinity, 50) : const Size(0, 0),
+            fullWidth ? const Size(double.infinity, 50) : const Size(0, 30),
         padding: const EdgeInsets.all(0),
       ),
       child: Text(
         text.toUpperCase(),
         style: TextStyle(
-          color: isDisabled ? Colors.grey : const Color(0xFF40AF9E),
-          fontFamily: 'Acumin Pro',
+          color: isDisabled ? Colors.grey : color,
           fontWeight: FontWeight.bold,
           fontSize: fontSize,
         ),

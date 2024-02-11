@@ -1,5 +1,6 @@
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
+import 'package:expatrio_challenge/utilities/get_country_based_on_country_code.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
@@ -78,16 +79,29 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   handleClickUpdateTaxData(
-      {required String selectedCountry, required String taxId}) async {
+      {required String primaryTaxResidenceSelectedCountry,
+      required String primaryTaxId,
+      required Map<int, String?> secondaryTaxResidenceSelectedCountries,
+      required List<TextEditingController> secondaryTaxIds}) async {
     UserTaxDataModel? userTaxData = _userTaxDataProvider.userTaxData;
+
+    List<TaxResidenceModel> _secondaryTaxResidences = [];
+    secondaryTaxResidenceSelectedCountries.forEach((key, value) {
+      if (value != null) {
+        _secondaryTaxResidences.add(TaxResidenceModel(
+          country: value,
+          id: secondaryTaxIds[key].text,
+        ));
+      }
+    });
 
     if (userTaxData != null) {
       UserTaxDataModel updatedUserTaxData = UserTaxDataModel(
         usPerson: userTaxData.usPerson,
         usTaxId: userTaxData.usTaxId,
-        primaryTaxResidence:
-            TaxResidenceModel(country: selectedCountry, id: taxId),
-        secondaryTaxResidence: userTaxData.secondaryTaxResidence,
+        primaryTaxResidence: TaxResidenceModel(
+            country: primaryTaxResidenceSelectedCountry, id: primaryTaxId),
+        secondaryTaxResidence: _secondaryTaxResidences,
         w9FileId: userTaxData.w9FileId,
         w9File: userTaxData.w9File,
       );
@@ -280,10 +294,17 @@ class DashboardScreenState extends State<DashboardScreen>
                     userDataProvider: userDataProvider,
                     userTaxDataProvider: userTaxDataProvider,
                     context: context,
-                    onTapSaveTaxData: (selectedCountry, taxId) {
+                    onTapSaveTaxData: (primaryTaxResidenceSelectedCountry,
+                        primaryTaxId,
+                        secondaryTaxResidenceSelectedCountries,
+                        secondaryTaxIds) {
                       handleClickUpdateTaxData(
-                        selectedCountry: selectedCountry,
-                        taxId: taxId,
+                        primaryTaxResidenceSelectedCountry:
+                            primaryTaxResidenceSelectedCountry,
+                        primaryTaxId: primaryTaxId,
+                        secondaryTaxResidenceSelectedCountries:
+                            secondaryTaxResidenceSelectedCountries,
+                        secondaryTaxIds: secondaryTaxIds,
                       );
                       Navigator.maybePop(context);
                     },

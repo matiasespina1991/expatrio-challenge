@@ -8,6 +8,7 @@ import 'package:expatrio_challenge/widgets/tax_residence_input.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_tax_data_model.dart';
+import '../../theme/expatrio_theme.dart';
 import '../../utilities/get_country_based_on_country_code.dart';
 import 'country_picker_modal_content.dart';
 
@@ -112,10 +113,16 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
     });
     if (primaryTaxResidenceSelectedCountry != null &&
         primaryTaxIdController.text.isNotEmpty &&
+        secondaryTaxResidenceSelectedCountry.values
+            .every((element) => element != null) &&
+        secondaryTaxIdControllers
+            .every((controller) => controller.text.isNotEmpty) &&
         userConfirmsTaxResidencyisTrueAndAccurate) {
       widget.onTapSaveTaxData(
         primaryTaxResidenceSelectedCountry!,
         primaryTaxIdController.text,
+        secondaryTaxResidenceSelectedCountry,
+        secondaryTaxIdControllers,
       );
     }
   }
@@ -130,6 +137,33 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
       );
       secondaryTaxIdControllers.add(TextEditingController());
     });
+  }
+
+  void reindexSecondaryTaxResidenceSelectedCountry() {
+    final newMap = <int, String?>{};
+    int newIndex = 0;
+    secondaryTaxResidenceSelectedCountry.forEach((key, value) {
+      newMap[newIndex++] = value;
+    });
+    setState(() {
+      secondaryTaxResidenceSelectedCountry = newMap;
+    });
+  }
+
+  void handleTapRemoveTaxResidency(int index) {
+    setState(() {
+      // userTaxData?.secondaryTaxResidence.removeAt(index);
+      userTaxData?.secondaryTaxResidence.removeWhere((taxResidence) =>
+          taxResidence.country == secondaryTaxResidenceSelectedCountry[index]);
+      secondaryTaxIdControllers.removeAt(index);
+      secondaryTaxResidenceSelectedCountry.remove(index);
+      reindexSecondaryTaxResidenceSelectedCountry();
+    });
+    debugPrint(
+        'userTaxData.secondaryTaxResidence: ${userTaxData?.secondaryTaxResidence}');
+    debugPrint('secondaryTaxIdControllers: $secondaryTaxIdControllers');
+    debugPrint(
+        'secondaryTaxResidenceSelectedCountry: $secondaryTaxResidenceSelectedCountry');
   }
 
   @override
@@ -184,7 +218,6 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                         }
                       },
                     ),
-                    const SizedBox(height: 20),
 
                     /// SECONDARY TAX RESIDENCES
                     userTaxData!.secondaryTaxResidence.isEmpty
@@ -198,6 +231,9 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  const SizedBox(
+                                    height: 22,
+                                  ),
                                   TaxResidenceInput(
                                     isPrimaryResidence: false,
                                     selectedCountry:
@@ -217,9 +253,12 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                                   TaxIdentificationNumberInput(
                                     taxIdController:
                                         secondaryTaxIdControllers[index],
-                                    taxIdFieldHasError:
-                                        secondaryTaxIdFieldHasError[index] ??
-                                            false,
+                                    taxIdFieldHasError: userClickedUpdate &&
+                                            secondaryTaxIdControllers[index]
+                                                .text
+                                                .isEmpty ||
+                                        (secondaryTaxIdFieldHasError[index] ??
+                                            false),
                                     onValueChanged: (value) {
                                       if (value.isEmpty) {
                                         setState(() {
@@ -234,11 +273,24 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                                       }
                                     },
                                   ),
-                                  const SizedBox(height: 10),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: ExpatrioTextButton(
+                                      color: ExpatrioTheme.errorColor,
+                                      onPressed: () {
+                                        handleTapRemoveTaxResidency(index);
+                                      },
+                                      text: '- remove',
+                                    ),
+                                  ),
                                 ],
                               );
                             },
                           ),
+
                     ExpatrioTextButton(
                       onPressed: () {
                         handleTapAddAnotherTaxResidency();
@@ -249,7 +301,6 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                 ),
                 //add an 'Add another' button here aligned to the left
 
-                const SizedBox(height: 30),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   width: MediaQuery.of(context).size.width,
