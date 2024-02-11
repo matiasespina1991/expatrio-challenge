@@ -64,7 +64,9 @@ class LoginScreenState extends State<LoginScreen>
       _connectivityProvider =
           Provider.of<ConnectivityProvider>(context, listen: false);
       _connectivityProvider.addListener(() {
-        showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+        if (mounted) {
+          showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+        }
       });
     });
 

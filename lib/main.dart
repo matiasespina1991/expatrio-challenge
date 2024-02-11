@@ -40,28 +40,30 @@ class PrimaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    return Consumer<AuthProvider>(builder: (context, auth, _) {
+      return !auth.isAuthenticated
+          ? const LoginScreen()
+          : Consumer<CurrentUserDataProvider>(
+              builder: (context, userDataProvider, child) {
+                return Consumer<CurrentUserTaxDataProvider>(
+                  builder: (context, taxDataProvider, child) {
+                    // if (taxDataProvider.userTaxData == null) {
+                    //   return const Scaffold(
+                    //     body: Center(child: CircularProgressIndicator()),
+                    //   );
+                    // }
 
-    return Consumer<CurrentUserDataProvider>(
-      builder: (context, userDataProvider, child) {
-        return Consumer<CurrentUserTaxDataProvider>(
-          builder: (context, taxDataProvider, child) {
-            if (taxDataProvider.userTaxData == null) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            }
+                    return const DashboardScreen();
 
-            return Consumer<AuthProvider>(
-              builder: (context, auth, _) {
-                return auth.isAuthenticated
-                    ? const DashboardScreen()
-                    : const LoginScreen();
+                    // return Consumer<AuthProvider>(
+                    //   builder: (context, auth, _) {
+                    //
+                    //   },
+                    // );
+                  },
+                );
               },
             );
-          },
-        );
-      },
-    );
+    });
   }
 }

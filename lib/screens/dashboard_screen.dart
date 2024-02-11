@@ -36,6 +36,18 @@ class DashboardScreenState extends State<DashboardScreen>
       CurrentUserTaxDataService();
   // UserTaxDataModel? _userTaxData;
 
+  void _reloadData() {
+    setState(() {
+      loading = true;
+    });
+    _userDataProvider.loadUserData();
+    _userTaxDataProvider.loadUserTaxData();
+
+    setState(() {
+      loading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -45,17 +57,20 @@ class DashboardScreenState extends State<DashboardScreen>
     });
 
     setState(() {
-      _userDataProvider =
-          Provider.of<CurrentUserDataProvider>(context, listen: false);
-
-      _userTaxDataProvider =
-          Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
       _connectivityProvider =
           Provider.of<ConnectivityProvider>(context, listen: false);
 
       _connectivityProvider.addListener(() {
         showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+        if (_connectivityProvider.isConnected) {
+          _reloadData();
+        }
       });
+      _userDataProvider =
+          Provider.of<CurrentUserDataProvider>(context, listen: false);
+
+      _userTaxDataProvider =
+          Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
     });
 
     setState(() {
@@ -107,20 +122,56 @@ class DashboardScreenState extends State<DashboardScreen>
           },
         ),
       ),
-      body: Consumer<CurrentUserTaxDataProvider>(
-        builder: (context, taxDataProvider, child) {
-          if (taxDataProvider.userTaxData == null || loading) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: ExpatrioTheme.primaryColor,
+      body: Consumer<ConnectivityProvider>(
+        builder: (context, connectivityProvider, child) {
+          if (!connectivityProvider.isConnected) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.wifi_off,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    'You currently have no internet connection.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {});
+
+                      // Trigger a reload of user data here if necessary
+                    },
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
             );
           }
 
-          return _buildBody(
-              context,
-              Provider.of<CurrentUserDataProvider>(context),
-              _userTaxDataProvider);
+          return Consumer<CurrentUserTaxDataProvider>(
+            builder: (context, taxDataProvider, child) {
+              if (taxDataProvider.userTaxData == null || loading) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: ExpatrioTheme.primaryColor,
+                  ),
+                );
+              }
+
+              return _buildBody(
+                  context,
+                  Provider.of<CurrentUserDataProvider>(context),
+                  _userTaxDataProvider);
+            },
+          );
         },
       ),
     );

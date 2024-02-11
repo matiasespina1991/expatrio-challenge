@@ -15,6 +15,10 @@ class ConnectivityProvider with ChangeNotifier {
   }
 
   void _updateConnectivityStatus(ConnectivityResult result) {
+    if (result == ConnectivityResult.none) {
+      debugPrint('USER HAS NO INTERNET CONNECTION.');
+    }
+
     _connectivityStatus = result;
     notifyListeners();
   }

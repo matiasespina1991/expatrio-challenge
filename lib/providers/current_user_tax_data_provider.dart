@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class CurrentUserTaxDataProvider with ChangeNotifier {
   UserTaxDataModel? _userTaxData;
+  bool fetchingUserData = false;
 
   CurrentUserTaxDataProvider() {
     loadUserTaxData();
@@ -12,11 +13,18 @@ class CurrentUserTaxDataProvider with ChangeNotifier {
   UserTaxDataModel? get userTaxData => _userTaxData;
 
   Future<void> loadUserTaxData() async {
-    final UserTaxDataModel? userTaxData =
-        await CurrentUserTaxDataService().fetchUserTaxData();
-    _userTaxData = userTaxData;
-
+    if (fetchingUserData) return;
+    fetchingUserData = true;
     notifyListeners();
+
+    try {
+      final UserTaxDataModel? userTaxData =
+          await CurrentUserTaxDataService().fetchUserTaxData();
+      _userTaxData = userTaxData;
+    } finally {
+      fetchingUserData = false;
+      notifyListeners();
+    }
   }
 
   Future<void> setUserTaxData(UserTaxDataModel userTaxData) async {

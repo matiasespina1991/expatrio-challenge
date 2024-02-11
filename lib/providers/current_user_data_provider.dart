@@ -18,31 +18,33 @@ class CurrentUserDataProvider with ChangeNotifier {
   UserDataModel? get userData => _userData;
 
   Future<void> loadUserData() async {
+    if (fetchingUserData) return;
     hasError = false;
     fetchingUserData = true;
     notifyListeners();
 
-    String? userId = await storage.read(key: 'user_id');
-    String? accessToken = await storage.read(key: 'auth_token');
-    if (userId == null && accessToken == null) {
-      fetchingUserData = false;
-      notifyListeners();
-      debugPrint(
-          'User ID and Auth Token not found. Aborting fetching user data. User is probably yet not authenticated.');
-      return;
-    }
+    try {
+      String? userId = await storage.read(key: 'user_id');
+      String? accessToken = await storage.read(key: 'auth_token');
+      if (userId == null || accessToken == null) {
+        debugPrint(
+            'User ID and Auth Token not found. User is probably yet not authenticated.');
+        return;
+      }
 
-    final UserDataModel? userData =
-        await CurrentUserDataService().fetchUserData();
+      final UserDataModel? userData =
+          await CurrentUserDataService().fetchUserData();
 
-    if (userData != null) {
-      _userData = userData;
-      fetchingUserData = false;
-      userDataFetchedSuccessfully = true;
-      hasError = false;
-      notifyListeners();
-    } else {
+      if (userData != null) {
+        _userData = userData;
+        userDataFetchedSuccessfully = true;
+      } else {
+        hasError = true;
+      }
+    } catch (e) {
+      debugPrint('Error fetching user data: $e');
       hasError = true;
+    } finally {
       fetchingUserData = false;
       notifyListeners();
     }
