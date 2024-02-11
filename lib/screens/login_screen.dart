@@ -269,8 +269,8 @@ class LoginScreenState extends State<LoginScreen>
                   minimumSize: const Size(100, 50),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const DashboardScreen()));
+                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //     builder: (context) => const DashboardScreen()));
                 },
                 child: const Row(
                   children: [
