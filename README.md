@@ -6,55 +6,44 @@ This project is a Flutter application developed as part of a challenge to implem
 ## Features
 - **User Authentication**: Log in using Expatrio credentials.
 - **Tax Data Update**: Users can update their tax information, including taxation country and tax identification number.
-- **Multiple Taxation Countries Management**: Users can add and manage tax information for multiple countries.
 - **Local and Backend Storage**: Tax data is stored locally and synced with the backend.
 
+## IDE Info
+- Android Studio Giraffe | 2022.3.1 Patch 1
+- Flutter v3.16.9 for UI development.
+- Dart 3.2.6
+- Xcode 15
+- Android SDK 31
+
+
 ## Technologies Used
-- Flutter for UI development.
 - Provider for state management.
 - Flutter Secure Storage for secure storage of tokens and sensitive data.
 - HTTP for network communications.
+- Connectivity Plus for network status monitoring.
 
 ## Getting Started
 
-### Prerequisites
-Ensure you have Flutter installed on your system. For more information on installing Flutter, visit [the official Flutter documentation](https://flutter.dev/docs/get-started/install).
 
 ### Installation
 1. Clone the repository:
-git clone https://github.com/gogetsu4024/expatrioCodingChallenge.git
+   git clone https://github.com/gogetsu4024/expatrioCodingChallenge.git
 
-markdown
-Copy code
+
 2. Enter the project directory:
-cd expatrioCodingChallenge
+   cd expatrioCodingChallenge
 
-markdown
-Copy code
+
 3. Install dependencies:
-flutter pub get
+   flutter pub get
 
-markdown
-Copy code
+
 4. Run the app:
-flutter run
+   flutter run
 
-markdown
-Copy code
 
 ## Usage
-To start the application, run `flutter run` in the terminal. Log in with your Expatrio credentials. Once authenticated, you will be redirected to the main screen where you can update your tax data.
-
-## Contributing
-If you would like to contribute to this project, please consider the following:
-- Fork the project.
-- Create a feature branch (`git checkout -b feature/AmazingFeature`).
-- Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-- Push to the branch (`git push origin feature/AmazingFeature`).
-- Open a Pull Request.
-
-## License
-Distributed under the MIT License. See `LICENSE` file for more information.
+To start the application, run `flutter run` in the terminal. Log in with your Expatrio credentials. Once authenticated, you will be redirected to the dashboard screen where you can update your tax data.
 
 ## Contact
 Matias Espina - [@matiasespina1991](https://www.linkedin.com/in/matiasespina/)
