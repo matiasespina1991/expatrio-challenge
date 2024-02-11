@@ -43,7 +43,12 @@ This project is a Flutter application developed as part of a challenge to implem
 
 
 ## Usage
-To start the application, run `flutter run` in the terminal. Log in with your Expatrio credentials. Once authenticated, you will be redirected to the dashboard screen where you can update your tax data.
+To start the application, run `flutter run` in the terminal. Log in with your Expatrio credentials. Once authenticated, you will be redirected to the main screen where you can update your tax data.
+
+
+## License
+Distributed under the MIT License. See `LICENSE` file for more information.
+
 
 ## Contact
 Matias Espina - [@matiasespina1991](https://www.linkedin.com/in/matiasespina/)
