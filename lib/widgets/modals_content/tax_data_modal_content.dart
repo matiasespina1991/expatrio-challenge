@@ -126,8 +126,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                       taxIdController: primaryTaxIdController,
                       taxIdFieldHasError: taxIdFieldHasError,
                       onValueChanged: (value) {
-                        bool isNumeric = RegExp(r'^[0-9]*$').hasMatch(value);
-                        if (!isNumeric || value.isEmpty) {
+                        if (value.isEmpty) {
                           setState(() {
                             taxIdFieldHasError = true;
                           });
@@ -149,10 +148,6 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Text(
-                                  //   'Country: ${getCountryBasedOnCountryCode(userTaxData?.secondaryTaxResidence[index].country ?? '')}',
-                                  //   style: const TextStyle(fontSize: 14),
-                                  // ),
                                   TaxResidenceInput(
                                     isPrimaryResidence: false,
                                     selectedCountry: userTaxData
@@ -166,17 +161,11 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                                             userClickedUpdate,
                                   ),
                                   const SizedBox(height: 6),
-                                  // Text(
-                                  //   'Tax identification number: ${userTaxData?.secondaryTaxResidence[index].id}',
-                                  //   style: const TextStyle(fontSize: 14),
-                                  // ),
                                   TaxIdentificationNumberInput(
                                     taxIdController: primaryTaxIdController,
                                     taxIdFieldHasError: taxIdFieldHasError,
                                     onValueChanged: (value) {
-                                      bool isNumeric =
-                                          RegExp(r'^[0-9]*$').hasMatch(value);
-                                      if (!isNumeric || value.isEmpty) {
+                                      if (value.isEmpty) {
                                         setState(() {
                                           taxIdFieldHasError = true;
                                         });
@@ -187,7 +176,6 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                                       }
                                     },
                                   ),
-
                                   const SizedBox(height: 10),
                                 ],
                               );

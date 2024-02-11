@@ -52,6 +52,7 @@ class TaxIdentificationNumberInput extends StatelessWidget {
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
             hintStyle: const TextStyle(fontSize: 14),
+            hintText: 'Tax ID or N/A',
           ),
         ),
       ],
