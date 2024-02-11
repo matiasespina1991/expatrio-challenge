@@ -22,6 +22,13 @@ This project is a Flutter application developed as part of a challenge to implem
 - HTTP for network communications.
 - Connectivity Plus for network status monitoring.
 
+## Tested
+- iOS (iPhone 11) ✅
+- Android (Google Pixel 3) ✅
+
+## Demo Walkthrough
+https://drive.google.com/drive/folders/1IBmkY4blcEqxLJtLYldBUio93lR-0vXg
+
 ## Getting Started
 
 

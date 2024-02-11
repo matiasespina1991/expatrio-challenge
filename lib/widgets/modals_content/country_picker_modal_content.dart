@@ -19,24 +19,28 @@ class CountryPickerModalState extends State<CountryPickerModal> {
       countriesList.map((map) => CountryList.fromMap(map)).toList();
 
   List<CountryList> listOfCountries = [];
-  List<CountryList> countriesWithOmissions = [];
+  List<CountryList> countriesAfterOmissions = [];
   String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
 
-    countriesWithOmissions = countries
-        .where((country) => !widget.omitCountries!.contains(country.codeName))
-        .toList();
+    if (widget.omitCountries != null) {
+      countriesAfterOmissions = countries
+          .where((country) => !widget.omitCountries!.contains(country.codeName))
+          .toList();
+    } else {
+      countriesAfterOmissions = countries;
+    }
 
-    listOfCountries = countriesWithOmissions;
+    listOfCountries = countriesAfterOmissions;
   }
 
   void _filterCountries(String query) {
     setState(() {
       searchQuery = query;
-      listOfCountries = countriesWithOmissions
+      listOfCountries = countriesAfterOmissions
           .where((country) =>
               country.name.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();

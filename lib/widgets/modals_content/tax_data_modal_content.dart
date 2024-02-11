@@ -69,6 +69,11 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) => CountryPickerModal(
+        omitCountries: [
+          ...secondaryTaxResidenceSelectedCountry.entries
+              .map((entry) => entry.value)
+              .whereType<String>()
+        ],
         onCountrySelected: (countrySelected) {
           result = countrySelected;
         },
