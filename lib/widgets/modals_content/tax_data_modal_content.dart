@@ -114,8 +114,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                           border: Border.all(
                             color: selectedCountry == null && userClickedUpdate
                                 ? Colors.red
-                                : Colors
-                                    .black54, // Cambia el color del borde si no se ha seleccionado un país y el usuario intentó actualizar
+                                : Colors.black54,
                             width: 1.0,
                           ),
                           borderRadius: BorderRadius.circular(7),
@@ -132,8 +131,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                                   color: selectedCountry == null &&
                                           userClickedUpdate
                                       ? Colors.red
-                                      : Colors
-                                          .black), // Cambia el color del texto si es necesario
+                                      : Colors.black),
                             ),
                             const Icon(Icons.arrow_drop_down,
                                 color: Colors.black),
@@ -141,8 +139,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                         ),
                       ),
                     ),
-                    if (selectedCountry == null &&
-                        userClickedUpdate) // Solo muestra el mensaje de error si es necesario
+                    if (selectedCountry == null && userClickedUpdate)
                       const Padding(
                         padding: EdgeInsets.only(top: 8.0),
                         child: Text(
@@ -167,8 +164,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                         }
                       },
                       decoration: InputDecoration(
-                        labelText:
-                            'Tax Identification Number', // Opcional: agrega un labelText para claridad
+                        labelText: 'Tax Identification Number',
                         errorText: taxIdFieldHasError
                             ? 'Please enter a valid tax identification number.'
                             : null,
