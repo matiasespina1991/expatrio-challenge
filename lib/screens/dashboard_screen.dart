@@ -14,6 +14,7 @@ import '../services/authentication_service.dart';
 import '../theme/expatrio_theme.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
+import 'login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -364,7 +365,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
   Future<void> goBack(BuildContext context) async {
     try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final authProvider = globalAuthProvider;
 
       final userDataProvider =
           Provider.of<CurrentUserDataProvider>(context, listen: false);
@@ -374,7 +375,17 @@ class DashboardScreenState extends State<DashboardScreen>
       await authProvider.logout();
       await authenticationService.logout();
 
-      await userDataProvider.clearUserData();
+      // await globalUserTaxDataProvider.clearUserTaxData();
+      // await globalUserDataProvider.clearUserData();
+      //
+      // ///if after 5 seconds the user is not redirected back to LoginScreen, then redirect to LoginScreen
+      // Future.delayed(const Duration(seconds: 5), () {
+      //   if (mounted) {
+      //     Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //       builder: (context) => const LoginScreen(),
+      //     ));
+      //   }
+      // });
     } catch (e) {
       debugPrint('Error when attempting to logout: $e');
     }
