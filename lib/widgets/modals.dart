@@ -290,7 +290,7 @@ class ShowModal {
 
   void updateTaxData({
     required BuildContext context,
-    required UpdateTaxDataCallback onTapUpdate,
+    required UpdateTaxDataCallback onTapSaveTaxData,
     required CurrentUserDataProvider userDataProvider,
     required CurrentUserTaxDataProvider userTaxDataProvider,
   }) {
@@ -301,7 +301,7 @@ class ShowModal {
       context: context,
       builder: (BuildContext context) {
         return TaxDataModalContent(
-          onTapUpdate: onTapUpdate,
+          onTapSaveTaxData: onTapSaveTaxData,
           userDataProvider: userDataProvider,
           userTaxDataProvider: userTaxDataProvider,
         );

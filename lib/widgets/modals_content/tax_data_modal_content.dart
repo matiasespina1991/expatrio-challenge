@@ -10,13 +10,13 @@ import '../../utilities/get_country_based_on_country_code.dart';
 import 'country_picker_modal_content.dart';
 
 class TaxDataModalContent extends StatefulWidget {
-  final UpdateTaxDataCallback onTapUpdate;
+  final UpdateTaxDataCallback onTapSaveTaxData;
   final CurrentUserDataProvider userDataProvider;
   final CurrentUserTaxDataProvider userTaxDataProvider;
 
   const TaxDataModalContent(
       {super.key,
-      required this.onTapUpdate,
+      required this.onTapSaveTaxData,
       required this.userDataProvider,
       required this.userTaxDataProvider});
 
@@ -73,7 +73,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
     if (selectedCountry != null &&
         taxIdController.text.isNotEmpty &&
         userConfirmsTaxResidencyisTrueAndAccurate) {
-      widget.onTapUpdate(
+      widget.onTapSaveTaxData(
         selectedCountry!,
         taxIdController.text,
       );
@@ -96,6 +96,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                 const Text('Declaration of financial information',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -147,7 +148,12 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                           style: TextStyle(fontSize: 12, color: Colors.red),
                         ),
                       ),
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 25),
+                    Text(
+                      'Tax identification number*'.toUpperCase(),
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    const SizedBox(height: 6),
                     TextField(
                       controller: taxIdController,
                       keyboardType: TextInputType.number,
@@ -164,7 +170,6 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                         }
                       },
                       decoration: InputDecoration(
-                        labelText: 'Tax Identification Number',
                         errorText: taxIdFieldHasError
                             ? 'Please enter a valid tax identification number.'
                             : null,
@@ -194,8 +199,16 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                         hintStyle: const TextStyle(fontSize: 14),
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    ExpatrioTextButton(
+                      isDisabled: true,
+                      onPressed: () {},
+                      text: '+ Add another',
+                    ),
                   ],
                 ),
+                //add an 'Add another' button here aligned to the left
+
                 const SizedBox(height: 30),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -223,7 +236,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                   ),
                 ),
                 ExpatrioButton(
-                    text: 'Update',
+                    text: 'Save',
                     onPressed: () {
                       handleClickUpdate();
                     }),

@@ -278,7 +278,7 @@ class DashboardScreenState extends State<DashboardScreen>
                   userDataProvider: userDataProvider,
                   userTaxDataProvider: userTaxDataProvider,
                   context: context,
-                  onTapUpdate: (selectedCountry, taxId) {
+                  onTapSaveTaxData: (selectedCountry, taxId) {
                     handleClickUpdateTaxData(
                       selectedCountry: selectedCountry,
                       taxId: taxId,

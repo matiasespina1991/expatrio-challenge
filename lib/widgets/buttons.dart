@@ -39,3 +39,39 @@ class ExpatrioButton extends StatelessWidget {
     );
   }
 }
+
+class ExpatrioTextButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final bool isPrimary;
+  final bool isDisabled;
+  final bool fullWidth;
+
+  const ExpatrioTextButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.isPrimary = true,
+    this.isDisabled = false,
+    this.fullWidth = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: isDisabled ? () {} : onPressed,
+      style: TextButton.styleFrom(
+        minimumSize:
+            fullWidth ? const Size(double.infinity, 50) : const Size(0, 0),
+        padding: const EdgeInsets.all(0),
+      ),
+      child: Text(
+        text.toUpperCase(),
+        style: TextStyle(
+          color: isDisabled ? Colors.grey : const Color(0xFF40AF9E),
+          fontFamily: 'Acumin Pro',
+        ),
+      ),
+    );
+  }
+}
