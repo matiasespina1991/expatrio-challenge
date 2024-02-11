@@ -8,7 +8,7 @@ import 'package:http/http.dart';
 import '../models/user_data_model.dart';
 import 'authentication_service.dart';
 
-class CurrentUserData {
+class CurrentUserDataService {
   final storage = const FlutterSecureStorage();
 
   Future<UserDataModel?> fetchUserData() async {

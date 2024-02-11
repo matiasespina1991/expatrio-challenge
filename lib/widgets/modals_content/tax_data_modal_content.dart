@@ -3,11 +3,11 @@ import 'package:expatrio_challenge/models/update_tax_data_callback_model.dart';
 import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
+import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:expatrio_challenge/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_tax_data_model.dart';
-import '../../theme/expatrio_theme.dart';
 import '../../utilities/get_country_based_on_country_code.dart';
 import 'country_picker_modal_content.dart';
 
@@ -38,15 +38,16 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
   @override
   void initState() {
     super.initState();
+    final UserDataModel? _userData = widget.userDataProvider.userData;
+    final UserTaxDataModel? _userTaxData =
+        widget.userTaxDataProvider.userTaxData;
+
     setState(() {
-      userData = widget.userDataProvider.userData;
-      userTaxData = widget.userTaxDataProvider.userTaxData;
-    });
-    ;
-    setState(() {
-      selectedCountry = userTaxData?.primaryTaxResidence.country;
+      userData = _userData;
+      userTaxData = _userTaxData;
+      selectedCountry = _userTaxData?.primaryTaxResidence.country;
       taxIdController =
-          TextEditingController(text: userTaxData?.primaryTaxResidence.id);
+          TextEditingController(text: _userTaxData?.primaryTaxResidence.id);
     });
   }
 

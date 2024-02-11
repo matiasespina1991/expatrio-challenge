@@ -295,9 +295,9 @@ class ShowModal {
     required CurrentUserTaxDataProvider userTaxDataProvider,
   }) {
     showModalBottomSheet(
-      enableDrag: false,
+      enableDrag: true,
       isScrollControlled: true,
-      isDismissible: false,
+      isDismissible: true,
       context: context,
       builder: (BuildContext context) {
         return TaxDataModalContent(

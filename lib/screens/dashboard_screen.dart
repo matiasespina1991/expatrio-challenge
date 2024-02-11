@@ -133,7 +133,7 @@ class DashboardScreenState extends State<DashboardScreen>
             const Text(
               'Error when trying to fetch user data.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.red),
+              style: TextStyle(fontSize: 18, color: ExpatrioTheme.errorColor),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -149,103 +149,106 @@ class DashboardScreenState extends State<DashboardScreen>
       );
     } else {
       _userFullName = getUserName(userDataProvider);
-      return Center(
-        child: SizedBox(
-          width: 280,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              if (_userFullName != null)
-                Column(
-                  children: [
-                    SizedBox(
-                      height: 220,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'Welcome back,',
-                              style: TextStyle(
-                                fontSize: 27,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              '$_userFullName.',
-                              style: const TextStyle(
-                                fontSize: 27,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ]),
-                    ),
-                  ],
-                ),
-              const SizedBox(height: 25),
-              const Text(
-                'Uh-Oh!',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+      return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 55),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            if (_userFullName != null)
+              Column(
+                children: [
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Welcome back,',
+                          style: TextStyle(
+                            fontSize: 27,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          '$_userFullName.',
+                          style: const TextStyle(
+                            fontSize: 27,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ]),
+                ],
               ),
-              const SizedBox(height: 10),
-              const SizedBox(
-                width: 220,
-                child: Text(
-                  'We need your tax data in order for you to access your account.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20),
-                ),
+            const SizedBox(
+              height: 35,
+            ),
+            Image.asset(
+              'assets/images/cliparts/data_missing_clipart.png',
+              width: 300,
+              height: 200,
+            ),
+            const SizedBox(height: 35),
+            const Text(
+              'Uh-Oh!',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 35),
-              ExpatrioButton(
-                fullWidth: true,
-                text: 'Update your tax data',
-                onPressed: () {
-                  final showModal = ShowModal();
-                  showModal.updateTaxData(
-                    userDataProvider: userDataProvider,
-                    userTaxDataProvider: userTaxDataProvider,
-                    context: context,
-                    onTapUpdate: (selectedCountry, taxId) {
-                      handleClickUpdateTaxData(
-                        selectedCountry: selectedCountry,
-                        taxId: taxId,
-                      );
-                      Navigator.maybePop(context);
-                    },
-                  );
-                },
+            ),
+            const SizedBox(height: 10),
+            const SizedBox(
+              width: 220,
+              child: Text(
+                'We need your tax data in order for you to access your account.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20),
               ),
-              const SizedBox(height: 16),
-              ExpatrioButton(
-                isPrimary: false,
-                fullWidth: true,
-                text: 'Fetch user data',
-                onPressed: () async {
-                  // UserDataModel? userData = userDataProvider.userData;
-                  //
-                  // if (userData != null) {
-                  //   log('User Data: ${userData.toJson()}');
-                  // } else {
-                  //   debugPrint('User data not found.');
-                  // }
-                  UserTaxDataModel? userTaxData =
-                      userTaxDataProvider.userTaxData;
-
-                  // UserTaxDataModel? userTaxData = _userTaxData;
-
-                  if (userTaxData != null) {
-                    log('User Tax Data: ${userTaxData.toJson()}');
-                  } else {
-                    debugPrint('User tax data not found.');
-                  }
-                },
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 35),
+            ExpatrioButton(
+              fullWidth: true,
+              text: 'Update your tax data',
+              onPressed: () {
+                final showModal = ShowModal();
+                showModal.updateTaxData(
+                  userDataProvider: userDataProvider,
+                  userTaxDataProvider: userTaxDataProvider,
+                  context: context,
+                  onTapUpdate: (selectedCountry, taxId) {
+                    handleClickUpdateTaxData(
+                      selectedCountry: selectedCountry,
+                      taxId: taxId,
+                    );
+                    Navigator.maybePop(context);
+                  },
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            // ExpatrioButton(
+            //   isPrimary: false,
+            //   fullWidth: true,
+            //   text: 'Fetch user data',
+            //   onPressed: () async {
+            //     // UserDataModel? userData = userDataProvider.userData;
+            //     //
+            //     // if (userData != null) {
+            //     //   log('User Data: ${userData.toJson()}');
+            //     // } else {
+            //     //   debugPrint('User data not found.');
+            //     // }
+            //     UserTaxDataModel? userTaxData = userTaxDataProvider.userTaxData;
+            //
+            //     // UserTaxDataModel? userTaxData = _userTaxData;
+            //
+            //     if (userTaxData != null) {
+            //       log('User Tax Data: ${userTaxData.toJson()}');
+            //     } else {
+            //       debugPrint('User tax data not found.');
+            //     }
+            //   },
+            // ),
+          ],
         ),
       );
     }

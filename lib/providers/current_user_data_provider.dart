@@ -32,7 +32,8 @@ class CurrentUserDataProvider with ChangeNotifier {
       return;
     }
 
-    final UserDataModel? userData = await CurrentUserData().fetchUserData();
+    final UserDataModel? userData =
+        await CurrentUserDataService().fetchUserData();
 
     if (userData != null) {
       _userData = userData;
