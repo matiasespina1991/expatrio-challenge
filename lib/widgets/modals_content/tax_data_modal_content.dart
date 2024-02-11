@@ -28,12 +28,15 @@ class TaxDataModalContent extends StatefulWidget {
 
 class TaxDataModalContentState extends State<TaxDataModalContent> {
   String? primaryTaxResidenceSelectedCountry;
+  Map<int, String?> secondaryTaxResidenceSelectedCountry = {};
   late UserDataModel? userData;
   late UserTaxDataModel? userTaxData;
   late TextEditingController primaryTaxIdController;
+  late List<TextEditingController> secondaryTaxIdControllers;
   bool userConfirmsTaxResidencyisTrueAndAccurate = false;
   bool userClickedUpdate = false;
-  bool taxIdFieldHasError = false;
+  bool primaryTaxIdFieldHasError = false;
+  Map<int, bool> secondaryTaxIdFieldHasError = {};
 
   @override
   void initState() {
@@ -47,12 +50,20 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
       userTaxData = _userTaxData;
       primaryTaxResidenceSelectedCountry =
           _userTaxData?.primaryTaxResidence.country;
+      secondaryTaxResidenceSelectedCountry = _userTaxData?.secondaryTaxResidence
+              .asMap()
+              .map((index, residence) => MapEntry(index, residence.country)) ??
+          {};
       primaryTaxIdController =
           TextEditingController(text: _userTaxData?.primaryTaxResidence.id);
+      secondaryTaxIdControllers = _userTaxData?.secondaryTaxResidence
+              .map((residence) => TextEditingController(text: residence.id))
+              .toList() ??
+          [];
     });
   }
 
-  void _showCountryPicker() async {
+  void _showCountryForPrimaryResidence() async {
     String? result;
     await showModalBottomSheet<String>(
       context: context,
@@ -65,7 +76,33 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
     );
 
     if (result != null) {
-      setState(() => primaryTaxResidenceSelectedCountry = result!);
+      setState(() => primaryTaxResidenceSelectedCountry = result);
+    }
+  }
+
+  void _showCountryPickerForSecondaryResidence(index) async {
+    debugPrint(
+        'secondaryTaxResidenceSelectedCountry: $secondaryTaxResidenceSelectedCountry');
+    String? result;
+    await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) => CountryPickerModal(
+        omitCountries: [
+          primaryTaxResidenceSelectedCountry,
+          ...secondaryTaxResidenceSelectedCountry.entries
+              .where((entry) => entry.key != index) //
+              .map((entry) => entry.value)
+              .whereType<String>()
+        ],
+        onCountrySelected: (countrySelected) {
+          result = countrySelected;
+        },
+      ),
+    );
+
+    if (result != null) {
+      setState(() => secondaryTaxResidenceSelectedCountry[index] = result);
     }
   }
 
@@ -83,7 +120,17 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
     }
   }
 
-  void handleTapAddAnotherTaxResidency() {}
+  void handleTapAddAnotherTaxResidency() {
+    setState(() {
+      userTaxData?.secondaryTaxResidence.add(
+        TaxResidenceModel(
+          country: null,
+          id: null,
+        ),
+      );
+      secondaryTaxIdControllers.add(TextEditingController());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,30 +164,33 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                   children: [
                     TaxResidenceInput(
                       selectedCountry: primaryTaxResidenceSelectedCountry,
-                      onTap: _showCountryPicker,
+                      onTap: _showCountryForPrimaryResidence,
                       isError: primaryTaxResidenceSelectedCountry == null &&
                           userClickedUpdate,
                     ),
                     const SizedBox(height: 25),
                     TaxIdentificationNumberInput(
                       taxIdController: primaryTaxIdController,
-                      taxIdFieldHasError: taxIdFieldHasError,
+                      taxIdFieldHasError: primaryTaxIdFieldHasError,
                       onValueChanged: (value) {
                         if (value.isEmpty) {
                           setState(() {
-                            taxIdFieldHasError = true;
+                            primaryTaxIdFieldHasError = true;
                           });
                         } else {
                           setState(() {
-                            taxIdFieldHasError = false;
+                            primaryTaxIdFieldHasError = false;
                           });
                         }
                       },
                     ),
                     const SizedBox(height: 20),
+
+                    /// SECONDARY TAX RESIDENCES
                     userTaxData!.secondaryTaxResidence.isEmpty
                         ? const SizedBox()
                         : ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount:
                                 userTaxData?.secondaryTaxResidence.length,
@@ -150,28 +200,36 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                                 children: [
                                   TaxResidenceInput(
                                     isPrimaryResidence: false,
-                                    selectedCountry: userTaxData
-                                        ?.secondaryTaxResidence[index].country,
+                                    selectedCountry:
+                                        secondaryTaxResidenceSelectedCountry[
+                                            index],
                                     onTap: () {
-                                      _showCountryPicker();
+                                      _showCountryPickerForSecondaryResidence(
+                                          index);
                                     },
                                     isError:
-                                        primaryTaxResidenceSelectedCountry ==
+                                        secondaryTaxResidenceSelectedCountry[
+                                                    index] ==
                                                 null &&
                                             userClickedUpdate,
                                   ),
-                                  const SizedBox(height: 6),
+                                  const SizedBox(height: 22),
                                   TaxIdentificationNumberInput(
-                                    taxIdController: primaryTaxIdController,
-                                    taxIdFieldHasError: taxIdFieldHasError,
+                                    taxIdController:
+                                        secondaryTaxIdControllers[index],
+                                    taxIdFieldHasError:
+                                        secondaryTaxIdFieldHasError[index] ??
+                                            false,
                                     onValueChanged: (value) {
                                       if (value.isEmpty) {
                                         setState(() {
-                                          taxIdFieldHasError = true;
+                                          secondaryTaxIdFieldHasError[index] =
+                                              true;
                                         });
                                       } else {
                                         setState(() {
-                                          taxIdFieldHasError = false;
+                                          secondaryTaxIdFieldHasError[index] =
+                                              false;
                                         });
                                       }
                                     },

@@ -6,7 +6,9 @@ import '../../models/country_list_model.dart';
 
 class CountryPickerModal extends StatefulWidget {
   final Function(String) onCountrySelected;
-  const CountryPickerModal({super.key, required this.onCountrySelected});
+  final List<String?>? omitCountries;
+  const CountryPickerModal(
+      {super.key, required this.onCountrySelected, this.omitCountries});
 
   @override
   CountryPickerModalState createState() => CountryPickerModalState();
@@ -16,19 +18,25 @@ class CountryPickerModalState extends State<CountryPickerModal> {
   final List<CountryList> countries =
       countriesList.map((map) => CountryList.fromMap(map)).toList();
 
-  List<CountryList> filteredCountries = [];
+  List<CountryList> listOfCountries = [];
+  List<CountryList> countriesWithOmissions = [];
   String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    filteredCountries = countries;
+
+    countriesWithOmissions = countries
+        .where((country) => !widget.omitCountries!.contains(country.codeName))
+        .toList();
+
+    listOfCountries = countriesWithOmissions;
   }
 
   void _filterCountries(String query) {
     setState(() {
       searchQuery = query;
-      filteredCountries = countries
+      listOfCountries = countriesWithOmissions
           .where((country) =>
               country.name.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();
@@ -36,7 +44,7 @@ class CountryPickerModalState extends State<CountryPickerModal> {
   }
 
   void handleSelectedCountry(index) {
-    String countrySelected = filteredCountries[index].codeName;
+    String countrySelected = listOfCountries[index].codeName;
 
     widget.onCountrySelected(countrySelected);
     Navigator.pop(context);
@@ -87,15 +95,14 @@ class CountryPickerModalState extends State<CountryPickerModal> {
             Expanded(
               child: ListView.builder(
                 controller: controller,
-                itemCount:
-                    filteredCountries.isEmpty ? 1 : filteredCountries.length,
+                itemCount: listOfCountries.isEmpty ? 1 : listOfCountries.length,
                 itemBuilder: (context, index) {
-                  if (filteredCountries.isEmpty) {
+                  if (listOfCountries.isEmpty) {
                     return const ListTile(
                         title: Text('No coincidences found...'));
                   }
                   return ListTile(
-                    title: Text(filteredCountries[index].name),
+                    title: Text(listOfCountries[index].name),
                     onTap: () => handleSelectedCountry(index),
                   );
                 },

@@ -1,6 +1,6 @@
 class TaxResidenceModel {
-  final String country;
-  final String id;
+  final String? country;
+  final String? id;
 
   TaxResidenceModel({
     required this.country,
