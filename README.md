@@ -27,7 +27,10 @@ This project is a Flutter application developed as part of a challenge to implem
 - Android (Google Pixel 3) ✅
 
 ## Demo Walkthrough
-https://drive.google.com/drive/folders/1IBmkY4blcEqxLJtLYldBUio93lR-0vXg
+https://drive.google.com/file/d/1U5psBRJOskeBI14NU5Xulhn0Y-_9l2s_/view?usp=drive_link
+
+## Connectivity Status Testing
+https://drive.google.com/file/d/1Kwv5f4sTFZW2VYclw9vGFyiwGJo5kbcY/view?usp=drive_link
 
 ## Getting Started
 
