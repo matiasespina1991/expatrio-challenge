@@ -89,6 +89,7 @@ class LoginScreenState extends State<LoginScreen>
     _passwordFocusNode.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _connectivityProvider.removeListener(() {});
 
     super.dispose();
   }
@@ -326,7 +327,7 @@ class LoginScreenState extends State<LoginScreen>
     );
 
     Future.delayed(const Duration(seconds: 26), () {
-      if (_attemptingLogin) {
+      if (_attemptingLogin && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: ExpatrioTheme.warningColor,

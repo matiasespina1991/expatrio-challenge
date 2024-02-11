@@ -46,10 +46,10 @@ class PrimaryScreen extends StatelessWidget {
       builder: (context, userDataProvider, child) {
         return Consumer<CurrentUserTaxDataProvider>(
           builder: (context, taxDataProvider, child) {
-            if (taxDataProvider.userTaxData == null &&
-                authProvider.isAuthenticated) {
-              return Container(
-                  child: const Center(child: CircularProgressIndicator()));
+            if (taxDataProvider.userTaxData == null) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
             }
 
             return Consumer<AuthProvider>(

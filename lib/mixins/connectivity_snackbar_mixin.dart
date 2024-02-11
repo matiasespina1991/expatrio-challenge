@@ -14,7 +14,7 @@ mixin ConnectivitySnackBarMixin {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
-      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
     }
   }
 }

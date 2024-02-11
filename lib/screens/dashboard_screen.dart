@@ -47,19 +47,26 @@ class DashboardScreenState extends State<DashboardScreen>
     setState(() {
       _userDataProvider =
           Provider.of<CurrentUserDataProvider>(context, listen: false);
-    });
-
-    setState(() {
-      _connectivityProvider =
-          Provider.of<ConnectivityProvider>(context, listen: false);
 
       _userTaxDataProvider =
           Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
+      _connectivityProvider =
+          Provider.of<ConnectivityProvider>(context, listen: false);
+
+      _connectivityProvider.addListener(() {
+        showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+      });
     });
 
     setState(() {
       loading = false;
     });
+  }
+
+  @override
+  void dispose() {
+    _connectivityProvider.removeListener(() {});
+    super.dispose();
   }
 
   handleClickUpdateTaxData(
