@@ -274,18 +274,32 @@ class DashboardScreenState extends State<DashboardScreen>
               text: 'Update your tax data',
               onPressed: () {
                 final showModal = ShowModal();
-                showModal.updateTaxData(
-                  userDataProvider: userDataProvider,
-                  userTaxDataProvider: userTaxDataProvider,
-                  context: context,
-                  onTapSaveTaxData: (selectedCountry, taxId) {
-                    handleClickUpdateTaxData(
-                      selectedCountry: selectedCountry,
-                      taxId: taxId,
-                    );
-                    Navigator.maybePop(context);
-                  },
-                );
+
+                if (userTaxDataProvider.userTaxData != null) {
+                  showModal.updateTaxData(
+                    userDataProvider: userDataProvider,
+                    userTaxDataProvider: userTaxDataProvider,
+                    context: context,
+                    onTapSaveTaxData: (selectedCountry, taxId) {
+                      handleClickUpdateTaxData(
+                        selectedCountry: selectedCountry,
+                        taxId: taxId,
+                      );
+                      Navigator.maybePop(context);
+                    },
+                  );
+                } else {
+                  debugPrint(
+                      'Error: When attempting to open the modal to update user tax data, the user tax data was not found when trying to fetch user data from the provider.');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: ExpatrioTheme.errorColor,
+                      content: Text(
+                          'Unable to load user tax data from database. Please try again later or contact support.'),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
               },
             ),
             const SizedBox(height: 16),

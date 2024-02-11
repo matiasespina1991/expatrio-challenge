@@ -53,7 +53,7 @@ class CurrentUserDataService {
         if (response.statusCode == 401) {
           debugPrint(
               'Error: Unauthorized. The access token is invalid. User will be logged out.');
-          final AuthProvider authProvider = AuthProvider();
+
           final AuthenticationService authService = AuthenticationService(
               authProvider: authProvider, userDataProvider: null);
           await authService.logout();

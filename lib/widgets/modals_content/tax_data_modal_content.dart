@@ -3,6 +3,8 @@ import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/widgets/buttons.dart';
+import 'package:expatrio_challenge/widgets/tax_identification_number_input.dart';
+import 'package:expatrio_challenge/widgets/tax_residence_input.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user_tax_data_model.dart';
@@ -25,10 +27,10 @@ class TaxDataModalContent extends StatefulWidget {
 }
 
 class TaxDataModalContentState extends State<TaxDataModalContent> {
-  String? selectedCountry;
+  String? primaryTaxResidenceSelectedCountry;
   late UserDataModel? userData;
   late UserTaxDataModel? userTaxData;
-  late TextEditingController taxIdController;
+  late TextEditingController primaryTaxIdController;
   bool userConfirmsTaxResidencyisTrueAndAccurate = false;
   bool userClickedUpdate = false;
   bool taxIdFieldHasError = false;
@@ -43,8 +45,9 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
     setState(() {
       userData = _userData;
       userTaxData = _userTaxData;
-      selectedCountry = _userTaxData?.primaryTaxResidence.country;
-      taxIdController =
+      primaryTaxResidenceSelectedCountry =
+          _userTaxData?.primaryTaxResidence.country;
+      primaryTaxIdController =
           TextEditingController(text: _userTaxData?.primaryTaxResidence.id);
     });
   }
@@ -62,26 +65,38 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
     );
 
     if (result != null) {
-      setState(() => selectedCountry = result!);
+      setState(() => primaryTaxResidenceSelectedCountry = result!);
     }
   }
 
-  void handleClickUpdate() {
+  void handleTapSaveTaxData() {
     setState(() {
       userClickedUpdate = true;
     });
-    if (selectedCountry != null &&
-        taxIdController.text.isNotEmpty &&
+    if (primaryTaxResidenceSelectedCountry != null &&
+        primaryTaxIdController.text.isNotEmpty &&
         userConfirmsTaxResidencyisTrueAndAccurate) {
       widget.onTapSaveTaxData(
-        selectedCountry!,
-        taxIdController.text,
+        primaryTaxResidenceSelectedCountry!,
+        primaryTaxIdController.text,
       );
     }
   }
 
+  void handleTapAddAnotherTaxResidency() {}
+
   @override
   Widget build(BuildContext context) {
+    if (userTaxData == null) {
+      return const Column(
+        children: [
+          Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 20),
       child: SizedBox(
@@ -100,64 +115,17 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Which country serves as your primary tax residence?*'
-                          .toUpperCase(),
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                    const SizedBox(height: 6),
-                    InkWell(
+                    TaxResidenceInput(
+                      selectedCountry: primaryTaxResidenceSelectedCountry,
                       onTap: _showCountryPicker,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: selectedCountry == null && userClickedUpdate
-                                ? Colors.red
-                                : Colors.black54,
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              selectedCountry == null
-                                  ? 'Select a country'
-                                  : getCountryBasedOnCountryCode(
-                                      selectedCountry!),
-                              style: TextStyle(
-                                  color: selectedCountry == null &&
-                                          userClickedUpdate
-                                      ? Colors.red
-                                      : Colors.black),
-                            ),
-                            const Icon(Icons.arrow_drop_down,
-                                color: Colors.black),
-                          ],
-                        ),
-                      ),
+                      isError: primaryTaxResidenceSelectedCountry == null &&
+                          userClickedUpdate,
                     ),
-                    if (selectedCountry == null && userClickedUpdate)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          'Please choose a country.',
-                          style: TextStyle(fontSize: 12, color: Colors.red),
-                        ),
-                      ),
                     const SizedBox(height: 25),
-                    Text(
-                      'Tax identification number*'.toUpperCase(),
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: taxIdController,
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
+                    TaxIdentificationNumberInput(
+                      taxIdController: primaryTaxIdController,
+                      taxIdFieldHasError: taxIdFieldHasError,
+                      onValueChanged: (value) {
                         bool isNumeric = RegExp(r'^[0-9]*$').hasMatch(value);
                         if (!isNumeric || value.isEmpty) {
                           setState(() {
@@ -169,40 +137,66 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                           });
                         }
                       },
-                      decoration: InputDecoration(
-                        errorText: taxIdFieldHasError
-                            ? 'Please enter a valid tax identification number.'
-                            : null,
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(7)),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black54, width: 1.0),
-                          borderRadius: BorderRadius.all(Radius.circular(7)),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.blue, width: 2.0),
-                          borderRadius: BorderRadius.all(Radius.circular(7)),
-                        ),
-                        errorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red, width: 1.0),
-                          borderRadius: BorderRadius.all(Radius.circular(7)),
-                        ),
-                        focusedErrorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.red, width: 2.0),
-                          borderRadius: BorderRadius.all(Radius.circular(7)),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 15),
-                        hintStyle: const TextStyle(fontSize: 14),
-                      ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
+                    userTaxData!.secondaryTaxResidence.isEmpty
+                        ? const SizedBox()
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount:
+                                userTaxData?.secondaryTaxResidence.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Text(
+                                  //   'Country: ${getCountryBasedOnCountryCode(userTaxData?.secondaryTaxResidence[index].country ?? '')}',
+                                  //   style: const TextStyle(fontSize: 14),
+                                  // ),
+                                  TaxResidenceInput(
+                                    isPrimaryResidence: false,
+                                    selectedCountry: userTaxData
+                                        ?.secondaryTaxResidence[index].country,
+                                    onTap: () {
+                                      _showCountryPicker();
+                                    },
+                                    isError:
+                                        primaryTaxResidenceSelectedCountry ==
+                                                null &&
+                                            userClickedUpdate,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  // Text(
+                                  //   'Tax identification number: ${userTaxData?.secondaryTaxResidence[index].id}',
+                                  //   style: const TextStyle(fontSize: 14),
+                                  // ),
+                                  TaxIdentificationNumberInput(
+                                    taxIdController: primaryTaxIdController,
+                                    taxIdFieldHasError: taxIdFieldHasError,
+                                    onValueChanged: (value) {
+                                      bool isNumeric =
+                                          RegExp(r'^[0-9]*$').hasMatch(value);
+                                      if (!isNumeric || value.isEmpty) {
+                                        setState(() {
+                                          taxIdFieldHasError = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          taxIdFieldHasError = false;
+                                        });
+                                      }
+                                    },
+                                  ),
+
+                                  const SizedBox(height: 10),
+                                ],
+                              );
+                            },
+                          ),
                     ExpatrioTextButton(
-                      isDisabled: true,
-                      onPressed: () {},
+                      onPressed: () {
+                        handleTapAddAnotherTaxResidency();
+                      },
                       text: '+ Add another',
                     ),
                   ],
@@ -238,7 +232,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                 ExpatrioButton(
                     text: 'Save',
                     onPressed: () {
-                      handleClickUpdate();
+                      handleTapSaveTaxData();
                     }),
               ]),
         ),
