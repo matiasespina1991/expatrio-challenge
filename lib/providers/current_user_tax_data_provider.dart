@@ -17,6 +17,7 @@ class CurrentUserTaxDataProvider with ChangeNotifier {
     final UserTaxDataModel? userTaxData =
         await CurrentUserTaxDataService().fetchUserTaxData();
     _userTaxData = userTaxData;
+
     notifyListeners();
   }
 

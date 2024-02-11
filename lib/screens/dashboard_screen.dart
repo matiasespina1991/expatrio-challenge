@@ -25,52 +25,60 @@ class DashboardScreen extends StatefulWidget {
 
 class DashboardScreenState extends State<DashboardScreen>
     with ConnectivitySnackBarMixin {
+  bool loading = true;
   bool _goBackPressed = false;
   late ConnectivityProvider _connectivityProvider;
   final _storage = const FlutterSecureStorage();
   late String? _userFullName;
   late CurrentUserTaxDataProvider _userTaxDataProvider;
   late CurrentUserDataProvider _userDataProvider;
-  late CurrentUserTaxDataService _currentUserTaxDataService;
-  UserTaxDataModel? _userTaxData;
-  Future? _loadUserTaxDataFuture;
+  final CurrentUserTaxDataService _currentUserTaxDataService =
+      CurrentUserTaxDataService();
+  // UserTaxDataModel? _userTaxData;
 
   @override
   void initState() {
     super.initState();
 
     setState(() {
-      _connectivityProvider =
-          Provider.of<ConnectivityProvider>(context, listen: false);
+      loading = true;
+    });
+
+    setState(() {
       _userDataProvider =
           Provider.of<CurrentUserDataProvider>(context, listen: false);
+    });
+
+    setState(() {
+      _connectivityProvider =
+          Provider.of<ConnectivityProvider>(context, listen: false);
+
       _userTaxDataProvider =
           Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
-      _currentUserTaxDataService = CurrentUserTaxDataService();
-      _userTaxData = _userTaxDataProvider.userTaxData;
-      _loadUserTaxDataFuture = _userTaxDataProvider.loadUserTaxData();
+    });
+
+    setState(() {
+      loading = false;
     });
   }
 
   handleClickUpdateTaxData(
       {required String selectedCountry, required String taxId}) async {
-    if (_userTaxData != null) {
-      UserTaxDataModel updatedUserTaxData = UserTaxDataModel(
-        usPerson: _userTaxData!.usPerson,
-        usTaxId: _userTaxData!.usTaxId,
-        primaryTaxResidence:
-            TaxResidenceModel(country: selectedCountry, id: taxId),
-        secondaryTaxResidence: _userTaxData!.secondaryTaxResidence,
-        w9FileId: _userTaxData!.w9FileId,
-        w9File: _userTaxData!.w9File,
-      );
+    UserTaxDataModel? userTaxData = _userTaxDataProvider.userTaxData;
 
-      await _userTaxDataProvider.setUserTaxData(updatedUserTaxData);
+    UserTaxDataModel updatedUserTaxData = UserTaxDataModel(
+      usPerson: userTaxData!.usPerson,
+      usTaxId: userTaxData!.usTaxId,
+      primaryTaxResidence:
+          TaxResidenceModel(country: selectedCountry, id: taxId),
+      secondaryTaxResidence: userTaxData!.secondaryTaxResidence,
+      w9FileId: userTaxData!.w9FileId,
+      w9File: userTaxData!.w9File,
+    );
 
-      setState(() {
-        _userTaxData = updatedUserTaxData;
-      });
-    }
+    await _userTaxDataProvider.setUserTaxData(updatedUserTaxData);
+
+    await _currentUserTaxDataService.setUserTaxData(updatedUserTaxData);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -92,26 +100,20 @@ class DashboardScreenState extends State<DashboardScreen>
           },
         ),
       ),
-      body: FutureBuilder(
-        future: _loadUserTaxDataFuture,
-        builder: (context, snapshot) {
-          debugPrint('Snapshot: $snapshot');
-          debugPrint('hasError: ${snapshot.hasError}');
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            if (snapshot.data != null) {
-              _userTaxData = snapshot.data as UserTaxDataModel?;
-            }
-            debugPrint('_userTaxData: $_userTaxData');
-            return _buildBody(
-                context,
-                Provider.of<CurrentUserDataProvider>(context),
-                _userTaxDataProvider);
+      body: Consumer<CurrentUserTaxDataProvider>(
+        builder: (context, taxDataProvider, child) {
+          if (taxDataProvider.userTaxData == null || loading) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: ExpatrioTheme.primaryColor,
+              ),
+            );
           }
+
+          return _buildBody(
+              context,
+              Provider.of<CurrentUserDataProvider>(context),
+              _userTaxDataProvider);
         },
       ),
     );
@@ -230,8 +232,10 @@ class DashboardScreenState extends State<DashboardScreen>
                   // } else {
                   //   debugPrint('User data not found.');
                   // }
+                  UserTaxDataModel? userTaxData =
+                      userTaxDataProvider.userTaxData;
 
-                  UserTaxDataModel? userTaxData = _userTaxData;
+                  // UserTaxDataModel? userTaxData = _userTaxData;
 
                   if (userTaxData != null) {
                     log('User Tax Data: ${userTaxData.toJson()}');

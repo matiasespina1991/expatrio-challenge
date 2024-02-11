@@ -14,6 +14,7 @@ class CurrentUserTaxDataService {
 
     try {
       userId = await storage.read(key: 'user_id');
+
       if (userId == null) {
         debugPrint('Error: User ID not found.');
         return null;
@@ -86,7 +87,7 @@ class CurrentUserTaxDataService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('User tax data updated successfully.');
+        debugPrint('User tax data updated successfully in the server.');
         return true;
       } else {
         debugPrint(
