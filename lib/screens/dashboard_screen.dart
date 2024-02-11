@@ -178,6 +178,8 @@ class DashboardScreenState extends State<DashboardScreen>
 
           return Consumer<CurrentUserTaxDataProvider>(
             builder: (context, taxDataProvider, child) {
+              debugPrint('Loading data: $loadingData');
+              debugPrint('User tax data: ${taxDataProvider.userTaxData}');
               if (taxDataProvider.userTaxData == null || loadingData) {
                 return const Center(
                   child: CircularProgressIndicator(

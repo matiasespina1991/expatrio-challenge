@@ -273,7 +273,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                                       }
                                     },
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10,
                                   ),
                                   Align(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:expatrio_challenge/main.dart';
 import 'package:expatrio_challenge/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -55,9 +56,12 @@ class CurrentUserDataService {
               'Error: Unauthorized. The access token is invalid. User will be logged out.');
 
           final AuthenticationService authService = AuthenticationService(
-              authProvider: authProvider, userDataProvider: null);
+              authProvider: authProvider,
+              userDataProvider: globalUserDataProvider);
           await authService.logout();
           await authProvider.clearAuthToken();
+          await globalUserTaxDataProvider.clearUserTaxData();
+          await globalUserDataProvider.clearUserData();
 
           return null;
         }
