@@ -44,13 +44,15 @@ class AuthenticationService {
 
         await storage.write(key: 'auth_token', value: accessToken);
         await storage.write(key: 'user_id', value: userId);
+        await storage.write(
+            key: 'last_used_login_email', value: emailController.text);
 
         debugPrint('Login successful.');
 
         debugPrint('Proceeding to load user data.');
 
         UserDataModel? currentUserData =
-            await CurrentUserDataService().fetchUserData();
+            await CurrentUserDataService(authProvider).fetchUserData();
 
         if (currentUserData != null) {
           debugPrint('User data fetched successfully.');

@@ -16,7 +16,6 @@ import '../utilities/error_code_to_message.dart';
 import '../utilities/validate_email.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
-import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   /// If the user tries to access a screen without being authenticated,
@@ -35,7 +34,8 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen>
     with ConnectivitySnackBarMixin {
   late AuthenticationService _authService;
-  final storage = const FlutterSecureStorage();
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  late String? lastUsedLoginEmail;
   final showModal = ShowModal();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -48,27 +48,34 @@ class LoginScreenState extends State<LoginScreen>
   bool _isHelpButtonVisible = true;
   bool _attemptingLogin = false;
 
+  void _loadLastUsedLoginEmail() async {
+    lastUsedLoginEmail = await storage.read(key: 'last_used_login_email');
+    if (lastUsedLoginEmail != null) {
+      _emailController.text = lastUsedLoginEmail!;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-    setState(() {
-      _emailFocusNode.addListener(_onFocusChange);
-      _passwordFocusNode.addListener(_onFocusChange);
-      _authService = AuthenticationService(
-        authProvider: Provider.of<AuthProvider>(context, listen: false),
-        userDataProvider:
-            Provider.of<CurrentUserDataProvider>(context, listen: false),
-      );
+    _emailFocusNode.addListener(_onFocusChange);
+    _passwordFocusNode.addListener(_onFocusChange);
+    _authService = AuthenticationService(
+      authProvider: Provider.of<AuthProvider>(context, listen: false),
+      userDataProvider:
+          Provider.of<CurrentUserDataProvider>(context, listen: false),
+    );
 
-      _connectivityProvider =
-          Provider.of<ConnectivityProvider>(context, listen: false);
-      _connectivityProvider.addListener(() {
-        if (mounted) {
-          showConnectivitySnackBar(context, _connectivityProvider.isConnected);
-        }
-      });
+    _connectivityProvider =
+        Provider.of<ConnectivityProvider>(context, listen: false);
+    _connectivityProvider.addListener(() {
+      if (mounted) {
+        showConnectivitySnackBar(context, _connectivityProvider.isConnected);
+      }
     });
+
+    _loadLastUsedLoginEmail();
 
     if (widget.userTriedUnauthorizedAccess != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -365,6 +372,10 @@ class LoginScreenState extends State<LoginScreen>
                   'There was an error when trying to authenticate your credentials. Please try again later or contact the administrators.',
               context: context,
               onTapConfirm: () {
+                setState(() {
+                  _attemptingLogin = false;
+                });
+
                 Navigator.of(context).pop();
               },
             );

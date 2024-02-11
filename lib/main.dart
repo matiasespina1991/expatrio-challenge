@@ -18,10 +18,12 @@ class ExpatrioChallengeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthProvider authProvider = AuthProvider();
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => CurrentUserDataProvider()),
+        ChangeNotifierProvider(create: (_) => authProvider),
+        ChangeNotifierProvider(
+            create: (_) => CurrentUserDataProvider(authProvider: authProvider)),
         ChangeNotifierProvider(create: (_) => CurrentUserAuthDataProvider()),
         ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
         ChangeNotifierProvider(create: (_) => CurrentUserTaxDataProvider()),
@@ -40,30 +42,14 @@ class PrimaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(builder: (context, auth, _) {
-      return !auth.isAuthenticated
-          ? const LoginScreen()
-          : Consumer<CurrentUserDataProvider>(
-              builder: (context, userDataProvider, child) {
-                return Consumer<CurrentUserTaxDataProvider>(
-                  builder: (context, taxDataProvider, child) {
-                    // if (taxDataProvider.userTaxData == null) {
-                    //   return const Scaffold(
-                    //     body: Center(child: CircularProgressIndicator()),
-                    //   );
-                    // }
-
-                    return const DashboardScreen();
-
-                    // return Consumer<AuthProvider>(
-                    //   builder: (context, auth, _) {
-                    //
-                    //   },
-                    // );
-                  },
-                );
-              },
-            );
-    });
+    return Consumer<AuthProvider>(
+      builder: (context, auth, _) {
+        if (!auth.isAuthenticated) {
+          return const LoginScreen();
+        } else {
+          return const DashboardScreen();
+        }
+      },
+    );
   }
 }

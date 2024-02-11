@@ -1,9 +1,7 @@
-import 'package:expatrio_challenge/data/countries_list.dart';
 import 'package:expatrio_challenge/models/update_tax_data_callback_model.dart';
 import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
-import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:expatrio_challenge/widgets/buttons.dart';
 import 'package:flutter/material.dart';
 

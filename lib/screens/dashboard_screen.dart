@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import '../mixins/connectivity_snackbar_mixin.dart';
 import '../models/user_tax_data_model.dart';
@@ -25,57 +22,53 @@ class DashboardScreen extends StatefulWidget {
 
 class DashboardScreenState extends State<DashboardScreen>
     with ConnectivitySnackBarMixin {
-  bool loading = true;
-  bool _goBackPressed = false;
+  bool loadingData = true;
   late ConnectivityProvider _connectivityProvider;
-  final _storage = const FlutterSecureStorage();
   late String? _userFullName;
   late CurrentUserTaxDataProvider _userTaxDataProvider;
   late CurrentUserDataProvider _userDataProvider;
   final CurrentUserTaxDataService _currentUserTaxDataService =
       CurrentUserTaxDataService();
-  // UserTaxDataModel? _userTaxData;
 
   void _reloadData() {
-    setState(() {
-      loading = true;
-    });
-    _userDataProvider.loadUserData();
-    _userTaxDataProvider.loadUserTaxData();
+    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    setState(() {
-      loading = false;
-    });
+    debugPrint(
+        'Auth status while reloading data: ${_authProvider.isAuthenticated}');
+    if (_authProvider.isAuthenticated) {
+      _userDataProvider.loadUserData();
+      _userTaxDataProvider.loadUserTaxData();
+    } else {
+      debugPrint('User is not authenticated.');
+      goBack(context);
+    }
   }
 
   @override
   void initState() {
     super.initState();
 
-    setState(() {
-      loading = true;
-    });
+    loadingData = true;
 
-    setState(() {
-      _connectivityProvider =
-          Provider.of<ConnectivityProvider>(context, listen: false);
+    _connectivityProvider =
+        Provider.of<ConnectivityProvider>(context, listen: false);
 
-      _connectivityProvider.addListener(() {
+    _connectivityProvider.addListener(() {
+      if (mounted) {
         showConnectivitySnackBar(context, _connectivityProvider.isConnected);
-        if (_connectivityProvider.isConnected) {
-          _reloadData();
-        }
-      });
-      _userDataProvider =
-          Provider.of<CurrentUserDataProvider>(context, listen: false);
+      }
 
-      _userTaxDataProvider =
-          Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
+      if (_connectivityProvider.isConnected) {
+        _reloadData();
+      }
     });
+    _userDataProvider =
+        Provider.of<CurrentUserDataProvider>(context, listen: false);
 
-    setState(() {
-      loading = false;
-    });
+    _userTaxDataProvider =
+        Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
+
+    loadingData = false;
   }
 
   @override
@@ -88,27 +81,40 @@ class DashboardScreenState extends State<DashboardScreen>
       {required String selectedCountry, required String taxId}) async {
     UserTaxDataModel? userTaxData = _userTaxDataProvider.userTaxData;
 
-    UserTaxDataModel updatedUserTaxData = UserTaxDataModel(
-      usPerson: userTaxData!.usPerson,
-      usTaxId: userTaxData!.usTaxId,
-      primaryTaxResidence:
-          TaxResidenceModel(country: selectedCountry, id: taxId),
-      secondaryTaxResidence: userTaxData!.secondaryTaxResidence,
-      w9FileId: userTaxData!.w9FileId,
-      w9File: userTaxData!.w9File,
-    );
+    if (userTaxData != null) {
+      UserTaxDataModel updatedUserTaxData = UserTaxDataModel(
+        usPerson: userTaxData.usPerson,
+        usTaxId: userTaxData.usTaxId,
+        primaryTaxResidence:
+            TaxResidenceModel(country: selectedCountry, id: taxId),
+        secondaryTaxResidence: userTaxData.secondaryTaxResidence,
+        w9FileId: userTaxData.w9FileId,
+        w9File: userTaxData.w9File,
+      );
+      await _userTaxDataProvider.setUserTaxData(updatedUserTaxData);
 
-    await _userTaxDataProvider.setUserTaxData(updatedUserTaxData);
+      await _currentUserTaxDataService.setUserTaxData(updatedUserTaxData);
 
-    await _currentUserTaxDataService.setUserTaxData(updatedUserTaxData);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: ExpatrioTheme.successColor,
-        content: Text('User data updated successfully.'),
-        duration: Duration(seconds: 3),
-      ),
-    );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: ExpatrioTheme.successColor,
+            content: Text('User data updated successfully.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } else {
+      debugPrint(
+          'Error: User tax data not found. When attempting to update user data, user tax data was not found when trying to fetch user data from the provider.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: ExpatrioTheme.errorColor,
+          content: Text('Error updating user data.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   @override
@@ -158,7 +164,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
           return Consumer<CurrentUserTaxDataProvider>(
             builder: (context, taxDataProvider, child) {
-              if (taxDataProvider.userTaxData == null || loading) {
+              if (taxDataProvider.userTaxData == null || loadingData) {
                 return const Center(
                   child: CircularProgressIndicator(
                     color: ExpatrioTheme.primaryColor,
@@ -325,10 +331,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
   Future<void> goBack(BuildContext context) async {
     try {
-      setState(() {
-        _goBackPressed = true;
-      });
-
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final userAuthDataProvider =
           Provider.of<CurrentUserAuthDataProvider>(context, listen: false);
