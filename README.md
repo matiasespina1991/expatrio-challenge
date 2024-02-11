@@ -45,6 +45,7 @@ This project is a Flutter application developed as part of a challenge to implem
 ## Usage
 To start the application, run `flutter run` in the terminal. Log in with your Expatrio credentials. Once authenticated, you will be redirected to the main screen where you can update your tax data.
 
+<<<<<<< HEAD
 ## Contributing
 If you would like to contribute to this project, please consider the following:
 - Fork the project.
@@ -52,9 +53,15 @@ If you would like to contribute to this project, please consider the following:
 - Commit your changes (`git commit -m 'Add some AmazingFeature'`).
 - Push to the branch (`git push origin feature/AmazingFeature`).
 - Open a Pull Request.
+=======
+>>>>>>> 7827a0d
 
 ## License
 Distributed under the MIT License. See `LICENSE` file for more information.
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7827a0d
 ## Contact
 Matias Espina - [@matiasespina1991](https://www.linkedin.com/in/matiasespina/)
