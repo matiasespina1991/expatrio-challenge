@@ -50,21 +50,21 @@ class CurrentUserDataService {
       } else {
         debugPrint(
             'Failed to fetch user profile. Status: ${response.statusCode}. Reason: ${response.body}');
-        if (response.statusCode == 401) {
-          debugPrint(
-              'Error: Unauthorized. The access token is invalid. User will be logged out.');
+        // if (response.statusCode == 401) {
+        debugPrint(
+            'Error: Unauthorized. The access token is invalid. User will be logged out.');
 
-          final AuthenticationService authService = AuthenticationService(
-              authProvider: authProvider,
-              userDataProvider: globalUserDataProvider);
-          await authService.logout();
-          await authProvider.clearAuthToken();
-          await globalUserTaxDataProvider.clearUserTaxData();
-          await globalUserDataProvider.clearUserData();
+        final AuthenticationService authService = AuthenticationService(
+            authProvider: authProvider,
+            userDataProvider: globalUserDataProvider);
+        await authService.logout();
+        await authProvider.clearAuthToken();
+        await globalUserTaxDataProvider.clearUserTaxData();
+        await globalUserDataProvider.clearUserData();
 
-          return null;
-        }
         return null;
+        // }
+        // return null;
       }
     } catch (e) {
       debugPrint(

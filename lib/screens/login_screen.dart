@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:expatrio_challenge/main.dart';
 import 'package:expatrio_challenge/models/login_attempt_response_model.dart';
 
 import 'package:expatrio_challenge/services/authentication_service.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../mixins/connectivity_snackbar_mixin.dart';
+import '../models/user_tax_data_model.dart';
 import '../providers/authentication_provider.dart';
 import '../providers/conectivity_provider.dart';
 import '../providers/current_user_data_provider.dart';
@@ -16,6 +20,7 @@ import '../utilities/error_code_to_message.dart';
 import '../utilities/validate_email.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
+import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   /// If the user tries to access a screen without being authenticated,
@@ -264,8 +269,8 @@ class LoginScreenState extends State<LoginScreen>
                   minimumSize: const Size(100, 50),
                 ),
                 onPressed: () {
-                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  //     builder: (context) => const DashboardScreen()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const DashboardScreen()));
                 },
                 child: const Row(
                   children: [

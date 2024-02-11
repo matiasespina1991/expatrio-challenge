@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expatrio_challenge/main.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
@@ -320,29 +322,29 @@ class DashboardScreenState extends State<DashboardScreen>
               },
             ),
             const SizedBox(height: 16),
-            // ExpatrioButton(
-            //   isPrimary: false,
-            //   fullWidth: true,
-            //   text: 'Fetch user data',
-            //   onPressed: () async {
-            //     // UserDataModel? userData = userDataProvider.userData;
-            //     //
-            //     // if (userData != null) {
-            //     //   log('User Data: ${userData.toJson()}');
-            //     // } else {
-            //     //   debugPrint('User data not found.');
-            //     // }
-            //     UserTaxDataModel? userTaxData = userTaxDataProvider.userTaxData;
-            //
-            //     // UserTaxDataModel? userTaxData = _userTaxData;
-            //
-            //     if (userTaxData != null) {
-            //       log('User Tax Data: ${userTaxData.toJson()}');
-            //     } else {
-            //       debugPrint('User tax data not found.');
-            //     }
-            //   },
-            // ),
+            ExpatrioButton(
+              isPrimary: false,
+              fullWidth: true,
+              text: 'Fetch user data',
+              onPressed: () async {
+                // UserDataModel? userData = userDataProvider.userData;
+                //
+                // if (userData != null) {
+                //   log('User Data: ${userData.toJson()}');
+                // } else {
+                //   debugPrint('User data not found.');
+                // }
+                UserTaxDataModel? userTaxData = userTaxDataProvider.userTaxData;
+
+                // UserTaxDataModel? userTaxData = _userTaxData;
+
+                if (userTaxData != null) {
+                  log('User Tax Data: ${userTaxData.toJson()}');
+                } else {
+                  debugPrint('User tax data not found.');
+                }
+              },
+            ),
           ],
         ),
       );
