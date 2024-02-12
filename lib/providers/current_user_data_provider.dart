@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -42,11 +44,17 @@ class CurrentUserDataProvider with ChangeNotifier {
         userDataFetchedSuccessfully = true;
         return 'success';
       } else {
-        hasError = true;
-        return 'error';
+        throw Exception(
+            'Failed to fetch user data'); // Lanzar una excepción específica
       }
     } catch (e) {
-      debugPrint('Error fetching user data: $e');
+      if (e is HttpException) {
+        debugPrint('Network error: ${e.message}');
+      } else if (e is FormatException) {
+        debugPrint('Data format error: ${e.message}');
+      } else {
+        debugPrint('Error fetching user data: $e');
+      }
       hasError = true;
       return 'error';
     } finally {

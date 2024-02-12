@@ -32,6 +32,9 @@ https://drive.google.com/file/d/1U5psBRJOskeBI14NU5Xulhn0Y-_9l2s_/view?usp=drive
 ## Connectivity Status Testing
 https://drive.google.com/file/d/1Kwv5f4sTFZW2VYclw9vGFyiwGJo5kbcY/view?usp=drive_link
 
+## Automatic logout when session auth token is no longer valid
+[https://drive.google.com/file/d/1Kwv5f4sTFZW2VYclw9vGFyiwGJo5kbcY/view?usp=drive_link](https://drive.google.com/file/d/1coqouwYgokuPQlCVLiNGDniKpigIvYIg/view?usp=drive_link)
+
 ## Getting Started
 
 

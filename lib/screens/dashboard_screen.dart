@@ -1,4 +1,6 @@
+import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
+import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -142,16 +144,55 @@ class DashboardScreenState extends State<DashboardScreen>
       );
       await _userTaxDataProvider.setUserTaxData(updatedUserTaxData);
 
-      await _currentUserTaxDataService.setUserTaxData(updatedUserTaxData);
+      bool userTaxDataUpdated =
+          await _currentUserTaxDataService.setUserTaxData(updatedUserTaxData);
+      if (userTaxDataUpdated) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: ExpatrioTheme.successColor,
+              content: Text('User data updated successfully.'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: ExpatrioTheme.errorColor,
+              content: Text(
+                  'An error ocurred when trying to update user data. Please try again later or contact support.'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+        if (mounted) {
+          AuthProvider authProvider =
+              Provider.of<AuthProvider>(context, listen: false);
+          AuthenticationService authService = AuthenticationService(
+              authProvider: authProvider, userDataProvider: _userDataProvider);
+          CurrentUserDataService userDataService = CurrentUserDataService();
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: ExpatrioTheme.successColor,
-            content: Text('User data updated successfully.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
+          UserDataModel? userData = await userDataService.fetchUserData();
+          if (userData == null) {
+            await authProvider.logout();
+            bool userIsLoggedOut = await authService.logout();
+
+            if (userIsLoggedOut) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content:
+                        Text('Session timed out. Automatically loggin out.'),
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
+              _userDataProvider.clearError();
+            }
+          }
+        }
       }
     } else {
       debugPrint(
