@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_data_service.dart';
@@ -105,13 +107,15 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Future<void> _reloadData() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (mounted) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    if (authProvider.isAuthenticated) {
-      await _userDataProvider.loadUserData();
-      await _userTaxDataProvider.loadUserTaxData();
-    } else {
-      goBack(context);
+      if (authProvider.isAuthenticated) {
+        await _userDataProvider.loadUserData();
+        await _userTaxDataProvider.loadUserTaxData();
+      } else {
+        goBack(context);
+      }
     }
   }
 

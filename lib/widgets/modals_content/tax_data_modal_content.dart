@@ -328,6 +328,7 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
                     onPressed: () {
                       handleTapSaveTaxData();
                     }),
+                const SizedBox(height: 60)
               ]),
         ),
       ),
