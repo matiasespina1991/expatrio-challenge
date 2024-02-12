@@ -39,8 +39,7 @@ class DashboardScreenState extends State<DashboardScreen>
 
     loadingData = true;
 
-    _connectivityProvider =
-        Provider.of<ConnectivityProvider>(context, listen: false);
+    _connectivityProvider = globalConnectivityProvider;
 
     _connectivityProvider.addListener(() {
       if (mounted) {
@@ -51,11 +50,9 @@ class DashboardScreenState extends State<DashboardScreen>
         _reloadData();
       }
     });
-    _userDataProvider =
-        Provider.of<CurrentUserDataProvider>(context, listen: false);
+    _userDataProvider = globalUserDataProvider;
 
-    _userTaxDataProvider =
-        Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
+    _userTaxDataProvider = globalUserTaxDataProvider;
 
     loadingData = false;
   }
@@ -322,11 +319,11 @@ class DashboardScreenState extends State<DashboardScreen>
                 }
               },
             ),
-            const SizedBox(height: 16),
+            // const SizedBox(height: 16),
             // ExpatrioButton(
             //   isPrimary: false,
             //   fullWidth: true,
-            //   text: 'Fetch user data',
+            //   text: 'Log user data',
             //   onPressed: () async {
             //     // UserDataModel? userData = userDataProvider.userData;
             //     //

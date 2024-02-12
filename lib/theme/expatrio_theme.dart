@@ -6,6 +6,7 @@ class ExpatrioTheme {
   static const Color errorColor = Color(0xFFD32F2F);
   static const Color successColor = Color(0xFF40AF9E);
   static const Color warningColor = Color(0xFFEFB700);
+  static const Color disabledColor = Colors.grey;
 
   static ThemeData themeData = ThemeData(
     fontFamily: 'Acumin Pro',

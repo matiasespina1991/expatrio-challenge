@@ -86,8 +86,6 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
   }
 
   void _showCountryPickerForSecondaryResidence(index) async {
-    debugPrint(
-        'secondaryTaxResidenceSelectedCountry: $secondaryTaxResidenceSelectedCountry');
     String? result;
     await showModalBottomSheet<String>(
       context: context,

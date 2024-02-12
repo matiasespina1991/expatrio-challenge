@@ -30,7 +30,6 @@ class ExpatrioChallengeApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => globalAuthProvider),
         ChangeNotifierProvider(create: (_) => globalUserDataProvider),
-        ChangeNotifierProvider(create: (_) => globalUserDataProvider),
         ChangeNotifierProvider(create: (_) => globalConnectivityProvider),
         ChangeNotifierProvider(create: (_) => globalUserTaxDataProvider),
       ],

@@ -243,7 +243,7 @@ class LoginScreenState extends State<LoginScreen>
                     ),
                     const SizedBox(height: 25.0),
                     ExpatrioButton(
-                      isDisabled: _attemptingLogin,
+                      disabled: _attemptingLogin,
                       fullWidth: true,
                       onPressed: () {
                         attemptLogin(context);
