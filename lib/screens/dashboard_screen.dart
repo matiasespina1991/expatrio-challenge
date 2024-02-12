@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:expatrio_challenge/main.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +11,6 @@ import '../services/authentication_service.dart';
 import '../theme/expatrio_theme.dart';
 import '../widgets/buttons.dart';
 import '../widgets/modals.dart';
-import 'login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -39,7 +35,8 @@ class DashboardScreenState extends State<DashboardScreen>
 
     loadingData = true;
 
-    _connectivityProvider = globalConnectivityProvider;
+    _connectivityProvider =
+        Provider.of<ConnectivityProvider>(context, listen: false);
 
     _connectivityProvider.addListener(() {
       if (mounted) {
@@ -50,9 +47,11 @@ class DashboardScreenState extends State<DashboardScreen>
         _reloadData();
       }
     });
-    _userDataProvider = globalUserDataProvider;
+    _userDataProvider =
+        Provider.of<CurrentUserDataProvider>(context, listen: false);
 
-    _userTaxDataProvider = globalUserTaxDataProvider;
+    _userTaxDataProvider =
+        Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
 
     loadingData = false;
   }
@@ -64,10 +63,10 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   void _reloadData() {
-    final _authProvider = globalAuthProvider;
+    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     if (_authProvider.isAuthenticated) {
-      _userDataProvider.loadUserData();
+      Future<String> loadUserData = _userDataProvider.loadUserData();
       _userTaxDataProvider.loadUserTaxData();
     } else {
       goBack(context);
@@ -162,8 +161,6 @@ class DashboardScreenState extends State<DashboardScreen>
                   ElevatedButton(
                     onPressed: () {
                       setState(() {});
-
-                      // Trigger a reload of user data here if necessary
                     },
                     child: const Text('Retry'),
                   ),
@@ -214,7 +211,6 @@ class DashboardScreenState extends State<DashboardScreen>
               onPressed: () {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 userDataProvider.loadUserData();
-                // Trigger a reload of user data here if necessary
               },
               child: const Text('Retry'),
             ),
@@ -361,8 +357,13 @@ class DashboardScreenState extends State<DashboardScreen>
   }
 
   Future<void> goBack(BuildContext context) async {
+    _logout(context);
+  }
+
+  Future<void> _logout(BuildContext context) async {
     try {
-      final authProvider = globalAuthProvider;
+      debugPrint('User will be logged out.');
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       final userDataProvider =
           Provider.of<CurrentUserDataProvider>(context, listen: false);
@@ -372,17 +373,14 @@ class DashboardScreenState extends State<DashboardScreen>
       await authProvider.logout();
       await authenticationService.logout();
 
-      // await globalUserTaxDataProvider.clearUserTaxData();
-      // await globalUserDataProvider.clearUserData();
-      //
-      // ///if after 5 seconds the user is not redirected back to LoginScreen, then redirect to LoginScreen
-      // Future.delayed(const Duration(seconds: 5), () {
-      //   if (mounted) {
-      //     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //       builder: (context) => const LoginScreen(),
-      //     ));
-      //   }
-      // });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('User successfully logged out.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     } catch (e) {
       debugPrint('Error when attempting to logout: $e');
     }

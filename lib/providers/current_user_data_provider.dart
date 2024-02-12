@@ -17,8 +17,8 @@ class CurrentUserDataProvider with ChangeNotifier {
 
   UserDataModel? get userData => _userData;
 
-  Future<void> loadUserData() async {
-    if (fetchingUserData) return;
+  Future<String> loadUserData() async {
+    if (fetchingUserData) return 'fetching';
     hasError = false;
     fetchingUserData = true;
     notifyListeners();
@@ -29,7 +29,7 @@ class CurrentUserDataProvider with ChangeNotifier {
       if (userId == null || accessToken == null) {
         debugPrint(
             'User ID and Auth Token not found. User is probably yet not authenticated.');
-        return;
+        return 'not_authenticated';
       }
 
       final UserDataModel? userData =
@@ -38,12 +38,15 @@ class CurrentUserDataProvider with ChangeNotifier {
       if (userData != null) {
         _userData = userData;
         userDataFetchedSuccessfully = true;
+        return 'success';
       } else {
         hasError = true;
+        return 'error';
       }
     } catch (e) {
       debugPrint('Error fetching user data: $e');
       hasError = true;
+      return 'error';
     } finally {
       fetchingUserData = false;
       notifyListeners();

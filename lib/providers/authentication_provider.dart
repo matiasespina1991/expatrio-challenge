@@ -26,6 +26,13 @@ class AuthProvider with ChangeNotifier {
   Future<void> clearAuthToken() async {
     await storage.delete(key: 'auth_token');
     _authToken = null;
+    if (_authToken != null) {
+      debugPrint('Error: Failed to clear auth token.');
+      debugPrint('User current session might not be finished properly.');
+    } else {
+      debugPrint('Auth token cleared.');
+      debugPrint('User will be logged out.');
+    }
     notifyListeners();
   }
 

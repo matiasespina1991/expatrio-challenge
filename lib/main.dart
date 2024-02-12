@@ -8,15 +8,6 @@ import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-final AuthProvider globalAuthProvider = AuthProvider();
-final CurrentUserDataProvider globalUserDataProvider =
-    CurrentUserDataProvider();
-
-final CurrentUserTaxDataProvider globalUserTaxDataProvider =
-    CurrentUserTaxDataProvider();
-
-final ConnectivityProvider globalConnectivityProvider = ConnectivityProvider();
-
 void main() {
   runApp(const ExpatrioChallengeApp());
 }
@@ -28,10 +19,10 @@ class ExpatrioChallengeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => globalAuthProvider),
-        ChangeNotifierProvider(create: (_) => globalUserDataProvider),
-        ChangeNotifierProvider(create: (_) => globalConnectivityProvider),
-        ChangeNotifierProvider(create: (_) => globalUserTaxDataProvider),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CurrentUserDataProvider()),
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
+        ChangeNotifierProvider(create: (_) => CurrentUserTaxDataProvider()),
       ],
       child: MaterialApp(
         title: 'Expatrio Challenge App',

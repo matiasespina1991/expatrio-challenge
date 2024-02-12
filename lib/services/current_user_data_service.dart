@@ -11,7 +11,6 @@ import 'authentication_service.dart';
 
 class CurrentUserDataService {
   final storage = const FlutterSecureStorage();
-  final AuthProvider authProvider = globalAuthProvider;
   CurrentUserDataService();
 
   Future<UserDataModel?> fetchUserData() async {
@@ -54,13 +53,13 @@ class CurrentUserDataService {
         debugPrint(
             'Error: Unauthorized. The access token is invalid. User will be logged out.');
 
-        final AuthenticationService authService = AuthenticationService(
-            authProvider: authProvider,
-            userDataProvider: globalUserDataProvider);
-        await authService.logout();
-        await authProvider.clearAuthToken();
-        await globalUserTaxDataProvider.clearUserTaxData();
-        await globalUserDataProvider.clearUserData();
+        // final AuthenticationService authService = AuthenticationService(
+        //     authProvider: authProvider,
+        //     userDataProvider: globalUserDataProvider);
+        // await authService.logout();
+        // await authProvider.clearAuthToken();
+        // await globalUserTaxDataProvider.clearUserTaxData();
+        // await globalUserDataProvider.clearUserData();
 
         return null;
         // }

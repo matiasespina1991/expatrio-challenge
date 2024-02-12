@@ -60,6 +60,11 @@ class AuthenticationService {
           userDataProvider?.setUserData(currentUserData);
         } else {
           debugPrint('ERROR: User data not found.');
+          return LoginAttemptResponseModel(
+              successful: false,
+              message: 'Login failed.',
+              statusCode: 400,
+              errorCode: 'USER_DATA_SERVICE_RETURNED_NULL');
         }
 
         return LoginAttemptResponseModel(
