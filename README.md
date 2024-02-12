@@ -13,7 +13,7 @@ This project is a Flutter application developed as part of a challenge to implem
 - Flutter v3.16.9 for UI development.
 - Dart 3.2.6
 - Xcode 15
-- Android SDK 31
+- Android SDK 34
 
 
 ## Technologies Used

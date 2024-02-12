@@ -128,16 +128,19 @@ class AuthenticationService {
       await storage.delete(key: 'auth_token');
       await storage.delete(key: 'user_id');
       try {
-        debugPrint('User will be logged out.');
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        if (context != null) {
+          debugPrint('User will be logged out.');
+          final authProvider =
+              Provider.of<AuthProvider>(context, listen: false);
 
-        final userDataProvider =
-            Provider.of<CurrentUserDataProvider>(context, listen: false);
-        final authenticationService = AuthenticationService(
-            authProvider: authProvider, userDataProvider: userDataProvider);
+          final userDataProvider =
+              Provider.of<CurrentUserDataProvider>(context, listen: false);
+          final authenticationService = AuthenticationService(
+              authProvider: authProvider, userDataProvider: userDataProvider);
 
-        await authProvider.logout();
-        await authenticationService.logout();
+          await authProvider.logout();
+          await authenticationService.logout();
+        }
       } catch (e) {
         debugPrint('Error when attempting to logout: $e');
       }

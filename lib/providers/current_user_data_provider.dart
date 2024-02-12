@@ -9,6 +9,7 @@ class CurrentUserDataProvider with ChangeNotifier {
   bool hasError = false;
   bool fetchingUserData = false;
   bool userDataFetchedSuccessfully = false;
+  int counter = 0;
 
   CurrentUserDataProvider() {
     debugPrint('User data provider initialized.');
@@ -18,6 +19,7 @@ class CurrentUserDataProvider with ChangeNotifier {
   UserDataModel? get userData => _userData;
 
   Future<String> loadUserData() async {
+    counter = counter + 1;
     if (fetchingUserData) return 'fetching';
     hasError = false;
     fetchingUserData = true;

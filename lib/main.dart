@@ -82,6 +82,7 @@ class PrimaryScreenState extends State<PrimaryScreen> {
           ),
         );
       }
+      currentUserDataProvider.clearError();
     }
   }
 }
