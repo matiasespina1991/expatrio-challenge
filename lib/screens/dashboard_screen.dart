@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_data_service.dart';

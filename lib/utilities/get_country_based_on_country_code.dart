@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expatrio_challenge/models/country_list_model.dart';
 
 import '../shared/countries_list.dart';
