@@ -38,10 +38,10 @@ class PrimaryScreen extends StatefulWidget {
   const PrimaryScreen({super.key});
 
   @override
-  _PrimaryScreenState createState() => _PrimaryScreenState();
+  PrimaryScreenState createState() => PrimaryScreenState();
 }
 
-class _PrimaryScreenState extends State<PrimaryScreen> {
+class PrimaryScreenState extends State<PrimaryScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer2<AuthProvider, CurrentUserDataProvider>(
@@ -71,6 +71,17 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
         authProvider: authProvider, userDataProvider: currentUserDataProvider);
 
     await authProvider.logout();
-    await authService.logout();
+    bool userIsLoggedOut = await authService.logout();
+
+    if (userIsLoggedOut) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Session timed out. Automatically loggin out.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }

@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:expatrio_challenge/main.dart';
-import 'package:expatrio_challenge/providers/authentication_provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 import '../models/user_data_model.dart';
-import 'authentication_service.dart';
 
 class CurrentUserDataService {
   final storage = const FlutterSecureStorage();

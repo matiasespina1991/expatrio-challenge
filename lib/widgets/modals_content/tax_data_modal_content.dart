@@ -41,22 +41,23 @@ class TaxDataModalContentState extends State<TaxDataModalContent> {
   @override
   void initState() {
     super.initState();
-    final UserDataModel? _userData = widget.userDataProvider.userData;
-    final UserTaxDataModel? _userTaxData =
+    final UserDataModel? fetchedUserData = widget.userDataProvider.userData;
+    final UserTaxDataModel? fetchedUserTaxData =
         widget.userTaxDataProvider.userTaxData;
 
     setState(() {
-      userData = _userData;
-      userTaxData = _userTaxData;
+      userData = fetchedUserData;
+      userTaxData = fetchedUserTaxData;
       primaryTaxResidenceSelectedCountry =
-          _userTaxData?.primaryTaxResidence.country;
-      secondaryTaxResidenceSelectedCountry = _userTaxData?.secondaryTaxResidence
+          fetchedUserTaxData?.primaryTaxResidence.country;
+      secondaryTaxResidenceSelectedCountry = fetchedUserTaxData
+              ?.secondaryTaxResidence
               .asMap()
               .map((index, residence) => MapEntry(index, residence.country)) ??
           {};
-      primaryTaxIdController =
-          TextEditingController(text: _userTaxData?.primaryTaxResidence.id);
-      secondaryTaxIdControllers = _userTaxData?.secondaryTaxResidence
+      primaryTaxIdController = TextEditingController(
+          text: fetchedUserTaxData?.primaryTaxResidence.id);
+      secondaryTaxIdControllers = fetchedUserTaxData?.secondaryTaxResidence
               .map((residence) => TextEditingController(text: residence.id))
               .toList() ??
           [];

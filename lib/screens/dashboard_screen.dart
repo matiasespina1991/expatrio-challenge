@@ -1,4 +1,3 @@
-import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +29,6 @@ class DashboardScreenState extends State<DashboardScreen>
   final CurrentUserTaxDataService _currentUserTaxDataService =
       CurrentUserTaxDataService();
 
-  // late UserDataModel? currentUserData;
-
   @override
   void initState() {
     super.initState();
@@ -55,8 +52,6 @@ class DashboardScreenState extends State<DashboardScreen>
 
     _userTaxDataProvider =
         Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
-
-    // currentUserData = _userDataProvider.userData;
 
     loadingData = false;
   }
@@ -83,6 +78,7 @@ class DashboardScreenState extends State<DashboardScreen>
         Provider.of<AuthProvider>(context, listen: false);
     final AuthenticationService auth = AuthenticationService(
         authProvider: authProvider, userDataProvider: _userDataProvider);
+
     final bool userIsLoggedOut = await auth.logout(context: context);
     if (userIsLoggedOut) {
       if (mounted) {
@@ -106,12 +102,12 @@ class DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  void _reloadData() {
-    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
+  Future<void> _reloadData() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    if (_authProvider.isAuthenticated) {
-      Future<String> loadUserData = _userDataProvider.loadUserData();
-      _userTaxDataProvider.loadUserTaxData();
+    if (authProvider.isAuthenticated) {
+      await _userDataProvider.loadUserData();
+      await _userTaxDataProvider.loadUserTaxData();
     } else {
       goBack(context);
     }
@@ -124,10 +120,10 @@ class DashboardScreenState extends State<DashboardScreen>
       required List<TextEditingController> secondaryTaxIds}) async {
     UserTaxDataModel? userTaxData = _userTaxDataProvider.userTaxData;
 
-    List<TaxResidenceModel> _secondaryTaxResidences = [];
+    List<TaxResidenceModel> secondaryTaxResidences = [];
     secondaryTaxResidenceSelectedCountries.forEach((key, value) {
       if (value != null) {
-        _secondaryTaxResidences.add(TaxResidenceModel(
+        secondaryTaxResidences.add(TaxResidenceModel(
           country: value,
           id: secondaryTaxIds[key].text,
         ));
@@ -140,7 +136,7 @@ class DashboardScreenState extends State<DashboardScreen>
         usTaxId: userTaxData.usTaxId,
         primaryTaxResidence: TaxResidenceModel(
             country: primaryTaxResidenceSelectedCountry, id: primaryTaxId),
-        secondaryTaxResidence: _secondaryTaxResidences,
+        secondaryTaxResidence: secondaryTaxResidences,
         w9FileId: userTaxData.w9FileId,
         w9File: userTaxData.w9File,
       );
