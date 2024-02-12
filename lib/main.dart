@@ -4,6 +4,7 @@ import 'package:expatrio_challenge/providers/current_user_data_provider.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/screens/dashboard_screen.dart';
 import 'package:expatrio_challenge/screens/login_screen.dart';
+import 'package:expatrio_challenge/services/authentication_service.dart';
 import 'package:expatrio_challenge/theme/expatrio_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,19 +34,43 @@ class ExpatrioChallengeApp extends StatelessWidget {
   }
 }
 
-class PrimaryScreen extends StatelessWidget {
+class PrimaryScreen extends StatefulWidget {
   const PrimaryScreen({super.key});
 
   @override
+  _PrimaryScreenState createState() => _PrimaryScreenState();
+}
+
+class _PrimaryScreenState extends State<PrimaryScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, auth, _) {
-        if (!auth.isAuthenticated) {
+    return Consumer2<AuthProvider, CurrentUserDataProvider>(
+      builder: (context, authProvider, currentUserDataProvider, _) {
+        if (currentUserDataProvider.hasError) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            debugPrint(
+                'Error found when trying to fetch user data. Logging out.');
+            _handleLogout(context);
+          });
+        }
+
+        if (!authProvider.isAuthenticated) {
           return const LoginScreen();
         } else {
           return const DashboardScreen();
         }
       },
     );
+  }
+
+  void _handleLogout(BuildContext context) async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final currentUserDataProvider =
+        Provider.of<CurrentUserDataProvider>(context, listen: false);
+    final AuthenticationService authService = AuthenticationService(
+        authProvider: authProvider, userDataProvider: currentUserDataProvider);
+
+    await authProvider.logout();
+    await authService.logout();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:expatrio_challenge/models/user_data_model.dart';
 import 'package:expatrio_challenge/providers/current_user_tax_data_provider.dart';
 import 'package:expatrio_challenge/services/current_user_tax_data_service.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,8 @@ class DashboardScreenState extends State<DashboardScreen>
   final CurrentUserTaxDataService _currentUserTaxDataService =
       CurrentUserTaxDataService();
 
+  // late UserDataModel? currentUserData;
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +56,8 @@ class DashboardScreenState extends State<DashboardScreen>
     _userTaxDataProvider =
         Provider.of<CurrentUserTaxDataProvider>(context, listen: false);
 
+    // currentUserData = _userDataProvider.userData;
+
     loadingData = false;
   }
 
@@ -60,6 +65,45 @@ class DashboardScreenState extends State<DashboardScreen>
   void dispose() {
     _connectivityProvider.removeListener(() {});
     super.dispose();
+  }
+
+  String? getUserName(userDataProvider) {
+    String? userFullName;
+    final userFirstName = userDataProvider.userData?.firstName;
+    final userLastName = userDataProvider.userData?.lastName;
+    if (userFirstName == null || userLastName == null) {
+      return null;
+    }
+    userFullName = '$userFirstName $userLastName';
+    return userFullName;
+  }
+
+  Future<void> goBack(BuildContext context) async {
+    final AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
+    final AuthenticationService auth = AuthenticationService(
+        authProvider: authProvider, userDataProvider: _userDataProvider);
+    final bool userIsLoggedOut = await auth.logout(context: context);
+    if (userIsLoggedOut) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('User successfully logged out.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Failed to log out. Try again later or contact support is the problem persists.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 
   void _reloadData() {
@@ -342,47 +386,6 @@ class DashboardScreenState extends State<DashboardScreen>
           ],
         ),
       );
-    }
-  }
-
-  String? getUserName(userDataProvider) {
-    String? userFullName;
-    final userFirstName = userDataProvider.userData?.firstName;
-    final userLastName = userDataProvider.userData?.lastName;
-    if (userFirstName == null || userLastName == null) {
-      return null;
-    }
-    userFullName = '$userFirstName $userLastName';
-    return userFullName;
-  }
-
-  Future<void> goBack(BuildContext context) async {
-    _logout(context);
-  }
-
-  Future<void> _logout(BuildContext context) async {
-    try {
-      debugPrint('User will be logged out.');
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-      final userDataProvider =
-          Provider.of<CurrentUserDataProvider>(context, listen: false);
-      final authenticationService = AuthenticationService(
-          authProvider: authProvider, userDataProvider: userDataProvider);
-
-      await authProvider.logout();
-      await authenticationService.logout();
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('User successfully logged out.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
-      }
-    } catch (e) {
-      debugPrint('Error when attempting to logout: $e');
     }
   }
 }

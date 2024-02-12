@@ -6,6 +6,7 @@ import 'package:expatrio_challenge/services/current_user_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../providers/authentication_provider.dart';
 
 import '../providers/current_user_data_provider.dart';
@@ -126,6 +127,20 @@ class AuthenticationService {
     try {
       await storage.delete(key: 'auth_token');
       await storage.delete(key: 'user_id');
+      try {
+        debugPrint('User will be logged out.');
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+        final userDataProvider =
+            Provider.of<CurrentUserDataProvider>(context, listen: false);
+        final authenticationService = AuthenticationService(
+            authProvider: authProvider, userDataProvider: userDataProvider);
+
+        await authProvider.logout();
+        await authenticationService.logout();
+      } catch (e) {
+        debugPrint('Error when attempting to logout: $e');
+      }
       return true;
     } catch (e) {
       debugPrint('Logout error: $e');
